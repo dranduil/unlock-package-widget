@@ -44,16 +44,33 @@ function doLogin() {
     });
 }
 
-/** ───────────── SIGNUP ───────────── **/
+// ─── SIGNUP ───────────────────────────────────────────
 function doSignup() {
-    const email = document.querySelector("#unlock-signup-email")?.value;
+    const name     = document.querySelector("#unlock-signup-name")?.value;
+    const surname  = document.querySelector("#unlock-signup-surname")?.value;
+    const email    = document.querySelector("#unlock-signup-email")?.value;
     const password = document.querySelector("#unlock-signup-password")?.value;
-    const msgDiv = document.querySelector("#unlock-signup-message");
+    const confirm  = document.querySelector("#unlock-signup-password-confirm")?.value;
+    const msgDiv   = document.querySelector("#unlock-signup-message");
+    const wrapper  = document.querySelector(".unlock-signup-wrapper");
 
-    if (!email || !password) {
-        if (msgDiv) msgDiv.innerText = "Email e password obbligatorie.";
+    if (!name || !surname || !email || !password || !confirm) {
+        if (msgDiv) msgDiv.innerText = "Tutti i campi sono obbligatori.";
         return;
     }
+    if (password !== confirm) {
+        if (msgDiv) msgDiv.innerText = "Le password non coincidono.";
+        return;
+    }
+
+    // Payload corrispondente alle tue regole di validazione
+    const payload = {
+        name:     name,
+        surname:  surname,
+        email:    email,
+        password: password,
+        password_confirmation: confirm
+    };
 
     fetch(`${API_BASE}/sign-up`, {
         method: "POST",
@@ -61,16 +78,34 @@ function doSignup() {
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(data => {
         if (data.token) {
             setToken(data.token);
             if (msgDiv) msgDiv.innerText = "Registrazione avvenuta con successo.";
-            loadPackagesList();
+
+            // Se esiste redirect URL, reindirizza
+            if (wrapper && wrapper.dataset.redirectUrl) {
+                window.location.href = wrapper.dataset.redirectUrl;
+                return;
+            }
+
+            // Altrimenti nascondi il form
+            hideSignupForm();
         } else {
-            if (msgDiv) msgDiv.innerText = "Registrazione fallita.";
+            // Potrebbe venire un errore di validazione
+            let errorMsg = "Registrazione fallita.";
+            if (data.errors) {
+                // Unisci messaggi di errore
+                const errs = [];
+                for (const key in data.errors) {
+                    errs.push(data.errors[key].join(" "));
+                }
+                errorMsg = errs.join(" ");
+            }
+            if (msgDiv) msgDiv.innerText = errorMsg;
         }
     })
     .catch(err => {
@@ -186,9 +221,19 @@ function setupunlockWidgets() {
     const btnLogin = document.querySelector("#unlock-btn-login");
     if (btnLogin) btnLogin.addEventListener("click", doLogin);
 
-    // Signup
-    const btnSignup = document.querySelector("#unlock-btn-signup");
-    if (btnSignup) btnSignup.addEventListener("click", doSignup);
+    //signup
+    const signupForm = document.querySelector("#unlock-signup-form");
+    if (signupForm) {
+        signupForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            doSignup();
+        });
+    }
+
+    // Se l’utente è già loggato, nascondi il form
+    if (getToken()) {
+        hideSignupForm();
+    }
 
     // Lista pacchetti
     if (document.querySelector("#unlock-packages-list")) {
