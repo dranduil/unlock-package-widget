@@ -38,9 +38,9 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 	protected function render() {
 		?>
 		<div class="unlock-packages-wrapper">
-			<h3 class="unlock-heading"><?php esc_html_e( 'Pacchetti disponibili', 'unlock-elementor-widgets' ); ?></h3>
+			<h3 class="unlock-heading"><?php esc_html_e( 'Packages available', 'unlock-elementor-widgets' ); ?></h3>
 			<div id="unlock-packages-list">
-				<p><?php esc_html_e( 'Sto caricando i pacchetti…', 'unlock-elementor-widgets' ); ?></p>
+				<p><?php esc_html_e( 'Loading Packages…', 'unlock-elementor-widgets' ); ?></p>
 			</div>
 		</div>
 		<?php
