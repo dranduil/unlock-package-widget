@@ -403,7 +403,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
         <div class="unlock-profile-wrapper"
              <?php if ( $redirect_url ) : ?>data-redirect-url="<?php echo $redirect_url; ?>"<?php endif; ?>>
             <div id="unlock-profile-content">
-                <p><?php esc_html_e( 'Caricamento profilo…', 'unlock-elementor-widgets' ); ?></p>
+                <p><?php esc_html_e( 'Loadin profile…', 'unlock-elementor-widgets' ); ?></p>
             </div>
 
             <!-- Passiamo in data-* quali sezioni mostrare e quali etichette usare -->
