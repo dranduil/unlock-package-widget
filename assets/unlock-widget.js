@@ -8,12 +8,14 @@ function getToken() {
     return match ? match[2] : null;
 }
 
-// 1) LOGIN
-function loginAction() {
-    const email = document.querySelector("#login_email")?.value;
-    const password = document.querySelector("#login_password")?.value;
+/** ───────────── LOGIN ───────────── **/
+function doLogin() {
+    const email = document.querySelector("#unlock-login-email")?.value;
+    const password = document.querySelector("#unlock-login-password")?.value;
+    const msgDiv = document.querySelector("#unlock-login-message");
+
     if (!email || !password) {
-        alert("Please enter email & password.");
+        if (msgDiv) msgDiv.innerText = "Email e password obbligatorie.";
         return;
     }
 
@@ -29,25 +31,27 @@ function loginAction() {
     .then(data => {
         if (data.token) {
             setToken(data.token);
-            alert("Login successful");
-            fetchPackages();
-            loadUserInfo();
+            if (msgDiv) msgDiv.innerText = "Login avvenuto con successo.";
+            // Eventuali callback: ricarica lista pacchetti e profilo
+            loadPackagesList();
         } else {
-            alert("Login failed");
+            if (msgDiv) msgDiv.innerText = "Login fallito.";
         }
     })
     .catch(err => {
         console.error(err);
-        alert("Error connecting to API.");
+        if (msgDiv) msgDiv.innerText = "Errore di connessione.";
     });
 }
 
-// 2) REGISTER
-function registerAction() {
-    const email = document.querySelector("#register_email")?.value;
-    const password = document.querySelector("#register_password")?.value;
+/** ───────────── SIGNUP ───────────── **/
+function doSignup() {
+    const email = document.querySelector("#unlock-signup-email")?.value;
+    const password = document.querySelector("#unlock-signup-password")?.value;
+    const msgDiv = document.querySelector("#unlock-signup-message");
+
     if (!email || !password) {
-        alert("Please enter email & password.");
+        if (msgDiv) msgDiv.innerText = "Email e password obbligatorie.";
         return;
     }
 
@@ -63,42 +67,26 @@ function registerAction() {
     .then(data => {
         if (data.token) {
             setToken(data.token);
-            alert("Registration successful");
-            fetchPackages();
-            loadUserInfo();
+            if (msgDiv) msgDiv.innerText = "Registrazione avvenuta con successo.";
+            loadPackagesList();
         } else {
-            alert("Registration failed");
+            if (msgDiv) msgDiv.innerText = "Registrazione fallita.";
         }
     })
     .catch(err => {
         console.error(err);
-        alert("Error connecting to API.");
+        if (msgDiv) msgDiv.innerText = "Errore di connessione.";
     });
 }
 
-// 3) LOAD CURRENT USER INFO
-function loadUserInfo() {
-    const token = getToken();
-    if (!token) return;
+/** ───────────── LISTA PACCHETTI ───────────── **/
+function loadPackagesList() {
+    const container = document.querySelector("#unlock-packages-list");
+    if (!container) return;
 
-    fetch(`${API_BASE}/user`, {
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json"
-        }
-    })
-    .then(res => res.json())
-    .then(user => {
-        const infoDiv = document.querySelector("#unlock-user-info");
-        if (!infoDiv) return;
-        infoDiv.style.display = "block";
-        infoDiv.innerHTML = `<strong>Welcome, ${user.name || user.email}</strong>`;
-    });
-}
-
-// 4) FETCH PACKAGES
-function fetchPackages() {
     const token = getToken();
+    container.innerHTML = "<p>Caricamento pacchetti…</p>";
+
     fetch(`${API_BASE}/packages`, {
         headers: token
             ? { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
@@ -106,47 +94,70 @@ function fetchPackages() {
     })
     .then(res => res.json())
     .then(data => {
-        const container = document.querySelector("#package_container");
-        if (!container) return;
-        container.innerHTML = ""; // Clear “Loading…” text
-
+        container.innerHTML = "";
         if (Array.isArray(data) && data.length) {
             data.forEach(pkg => {
-                // Create a simple package card—Elementor styles will override as needed
                 const card = document.createElement("div");
                 card.classList.add("unlock-package-card");
                 card.setAttribute("data-id", pkg.id);
 
-                const html = `
+                card.innerHTML = `
                     <h4 class="unlock-package-name">${pkg.name}</h4>
                     <p class="unlock-package-desc">${pkg.description}</p>
                     <p class="unlock-package-price">${pkg.price}</p>
-                    <ul class="unlock-package-features">
+                    <ul>
                         ${pkg.features.map(f => `<li>${f}</li>`).join("")}
                     </ul>
-                    <button class="unlock-btn buy-package" data-id="${pkg.id}">
-                        Buy
-                    </button>
+                    <button class="unlock-buy-btn" data-id="${pkg.id}">Acquista</button>
                 `;
-                card.innerHTML = html;
                 container.appendChild(card);
             });
         } else {
-            container.innerHTML = `<p>No packages available.</p>`;
+            container.innerHTML = "<p>Nessun pacchetto disponibile.</p>";
         }
     })
     .catch(err => {
         console.error(err);
-        const container = document.querySelector("#package_container");
-        if (container) container.innerHTML = `<p>Error loading packages.</p>`;
+        container.innerHTML = "<p>Errore nel caricamento dei pacchetti.</p>";
     });
 }
 
-// 5) PURCHASE PACKAGE
-function purchasePackage(id) {
+/** ───────────── SINGOLO PACCHETTO ───────────── **/
+function loadSinglePackage(pkgId) {
+    const container = document.querySelector(`#unlock-single-package-${pkgId}`);
+    if (!container) return;
+
+    const token = getToken();
+    container.innerHTML = "<p>Caricamento dettagli…</p>";
+
+    fetch(`${API_BASE}/packages/${pkgId}`, {
+        headers: token
+            ? { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
+            : { "Accept": "application/json" }
+    })
+    .then(res => res.json())
+    .then(pkg => {
+        container.innerHTML = `
+            <h4 class="unlock-package-name">${pkg.name}</h4>
+            <p class="unlock-package-desc">${pkg.description}</p>
+            <p class="unlock-package-price">${pkg.price}</p>
+            <ul>
+                ${pkg.features.map(f => `<li>${f}</li>`).join("")}
+            </ul>
+            <button class="unlock-buy-btn" data-id="${pkg.id}">Acquista</button>
+        `;
+    })
+    .catch(err => {
+        console.error(err);
+        container.innerHTML = "<p>Errore nel caricamento del pacchetto.</p>";
+    });
+}
+
+/** ───────────── ACQUISTA PACCHETTO ───────────── **/
+function doPurchase(pkgId) {
     const token = getToken();
     if (!token) {
-        alert("You must be logged in.");
+        alert("Devi essere loggato.");
         return;
     }
 
@@ -157,48 +168,48 @@ function purchasePackage(id) {
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json"
         },
-        body: JSON.stringify({ package_id: parseInt(id) })
+        body: JSON.stringify({ package_id: parseInt(pkgId) })
     })
     .then(res => res.json())
-    .then(resp => {
-        alert("Package purchased successfully!");
-        // Optionally dispatch event or reload user info
+    .then(() => {
+        alert("Pacchetto acquistato con successo.");
     })
     .catch(err => {
         console.error(err);
-        alert("Error purchasing package.");
+        alert("Errore durante l'acquisto.");
     });
 }
 
-// 6) Wire up DOM Events
-function setupEventListeners() {
-    // LOGIN BUTTON
-    const btnLogin = document.querySelector("#btn_login");
-    if (btnLogin) {
-        btnLogin.addEventListener("click", loginAction);
+/** ───────────── EVENT LISTENERS ───────────── **/
+function setupunlockWidgets() {
+    // Login
+    const btnLogin = document.querySelector("#unlock-btn-login");
+    if (btnLogin) btnLogin.addEventListener("click", doLogin);
+
+    // Signup
+    const btnSignup = document.querySelector("#unlock-btn-signup");
+    if (btnSignup) btnSignup.addEventListener("click", doSignup);
+
+    // Lista pacchetti
+    if (document.querySelector("#unlock-packages-list")) {
+        loadPackagesList();
     }
 
-    // REGISTER BUTTON
-    const btnRegister = document.querySelector("#btn_register");
-    if (btnRegister) {
-        btnRegister.addEventListener("click", registerAction);
-    }
+    // Singolo pacchetto: cerchiamo tutti i container che hanno attributo data-package-id
+    document.querySelectorAll("[id^='unlock-single-package-']").forEach(div => {
+        const pkgId = div.getAttribute("data-package-id");
+        if (pkgId) {
+            loadSinglePackage(pkgId);
+        }
+    });
 
-    // WHEN A “Buy” BUTTON IS CLICKED (delegation)
+    // Acquisto (delegazione)
     document.addEventListener("click", function(e) {
-        if (e.target && e.target.matches(".buy-package")) {
+        if (e.target.matches(".unlock-buy-btn")) {
             const pkgId = e.target.getAttribute("data-id");
-            purchasePackage(pkgId);
+            doPurchase(pkgId);
         }
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    setupEventListeners();
-
-    // If already logged in, show user and packages immediately
-    if (getToken()) {
-        loadUserInfo();
-    }
-    fetchPackages();
-});
+document.addEventListener("DOMContentLoaded", setupunlockWidgets);

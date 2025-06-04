@@ -1,33 +1,46 @@
 <?php
 /**
- * Plugin Name:     unlock Elementor Widget
- * Description:     Fully integrated Elementor Pro widget for unlock (login, register, profile, packages, purchase).
+ * Plugin Name:     unlock Elementor Widgets
+ * Description:     Collezione di widget Elementor per login/signup, lista pacchetti e dettaglio pacchetto (API Laravel).
  * Version:         1.0
  * Author:          Steeven
- * Text Domain:     unlock-elementor-widget
+ * Text Domain:     unlock-elementor-widgets
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit; // Evitiamo accessi diretti
 }
 
-// 1) Enqueue our JS (only on pages where Elementor is active).
+/**
+ * 1) Enqueue JS (solo se Elementor è attivo o su front-end)
+ */
 add_action( 'wp_enqueue_scripts', function() {
 	wp_enqueue_script(
-		'unlock-widget-js',
-		plugins_url( 'assets/unlock-widget.js', __FILE__ ),
-		[], // no dependencies
+		'unlock-widgets-js',
+		plugins_url( 'assets/unlock-widgets.js', __FILE__ ),
+		[],   // nessuna dipendenza particolare
 		null,
-		true // in footer
+		true  // carica in footer
 	);
+
+	// Se prevedi CSS custom, potresti aggiungere qui un enqueue_style
+	// wp_enqueue_style( 'unlock-widgets-css', plugins_url('assets/unlock-widgets.css', __FILE__) );
 } );
 
-// 2) Make sure Elementor is active, then register our widget.
+/**
+ * 2) Registra i widget su Elementor
+ */
 add_action( 'elementor/widgets/register', function( $widgets_manager ) {
 
-	// Include the widget PHP file
-	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock.php';
+	// Includi tutti i file PHP dei widget
+	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-login.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-signup.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-packages-list.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-single-package.php';
 
-	// Register the widget class
-	$widgets_manager->register( new \unlock_Widget_Elementor() );
+	// Registra ciascuna classe come widget
+	$widgets_manager->register( new \unlock_Widget_Login() );
+	$widgets_manager->register( new \unlock_Widget_Signup() );
+	$widgets_manager->register( new \unlock_Widget_Packages_List() );
+	$widgets_manager->register( new \unlock_Widget_Single_Package() );
 } );
