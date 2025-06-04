@@ -78,6 +78,92 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
+		// 5) Redirect URL dopo login
+		$this->add_control(
+			'redirect_url',
+			[
+				'label'       => __( 'Redirect After Login', 'unlock-elementor-widgets' ),
+				'type'        => \Elementor\Controls_Manager::URL,
+				'placeholder' => __( 'https://tuosito.it/pagina-di-redirect', 'unlock-elementor-widgets' ),
+				'description' => __( 'Lascia vuoto per non reindirizzare', 'unlock-elementor-widgets' ),
+			]
+		);
+
+		$this->end_controls_section();
+
+		// ───── STYLE TAB: Heading ─────
+		$this->start_controls_section(
+			'section_style_heading',
+			[
+				'label' => __( 'Heading', 'unlock-elementor-widgets' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		// 1) Heading Color
+		$this->add_control(
+			'heading_color',
+			[
+				'label'     => __( 'Heading Color', 'unlock-elementor-widgets' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '#222222',
+				'selectors' => [
+					'{{WRAPPER}} .unlock-heading' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		// 2) Heading Typography
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name'     => 'heading_typography',
+				'label'    => __( 'Heading Typography', 'unlock-elementor-widgets' ),
+				'selector' => '{{WRAPPER}} .unlock-heading',
+			]
+		);
+
+		// 3) Heading Alignment
+		$this->add_control(
+			'heading_alignment',
+			[
+				'label'   => __( 'Heading Alignment', 'unlock-elementor-widgets' ),
+				'type'    => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left'   => [
+						'title' => __( 'Left', 'unlock-elementor-widgets' ),
+						'icon'  => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'unlock-elementor-widgets' ),
+						'icon'  => 'eicon-text-align-center',
+					],
+					'right'  => [
+						'title' => __( 'Right', 'unlock-elementor-widgets' ),
+						'icon'  => 'eicon-text-align-right',
+					],
+				],
+				'default'   => 'left',
+				'toggle'    => false,
+				'selectors' => [
+					'{{WRAPPER}} .unlock-heading' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
+		// 4) Heading Margin (Box Control)
+		$this->add_responsive_control(
+			'heading_margin',
+			[
+				'label'      => __( 'Heading Margin', 'unlock-elementor-widgets' ),
+				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'selectors'  => [
+					'{{WRAPPER}} .unlock-heading' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 
 		// ───── STYLE TAB: Input Fields ─────
@@ -147,6 +233,25 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors'  => [
 					'{{WRAPPER}} .unlock-input' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// 6) Input Margin Bottom
+		$this->add_responsive_control(
+			'input_margin',
+			[
+				'label'      => __( 'Input Margin (Bottom)', 'unlock-elementor-widgets' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%', 'em' ],
+				'range'      => [
+					'px' => [
+						'min' => 0,
+						'max' => 50,
+					],
+				],
+				'selectors'  => [
+					'{{WRAPPER}} .unlock-input' => 'margin-bottom: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -230,13 +335,28 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
+		// 6) Button Margin (Box Control)
+		$this->add_responsive_control(
+			'button_margin',
+			[
+				'label'      => __( 'Button Margin', 'unlock-elementor-widgets' ),
+				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'selectors'  => [
+					'{{WRAPPER}} .unlock-btn' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 	}
 
 	protected function render() {
-		$settings = $this->get_settings_for_display();
+		$settings     = $this->get_settings_for_display();
+		$redirect_url = ( ! empty( $settings['redirect_url']['url'] ) ) ? esc_url( $settings['redirect_url']['url'] ) : '';
 		?>
-		<div class="unlock-login-wrapper">
+		<div class="unlock-login-wrapper"
+		     <?php if ( $redirect_url ) : ?>data-redirect-url="<?php echo $redirect_url; ?>"<?php endif; ?>>
 			<?php if ( ! empty( $settings['heading_text'] ) ) : ?>
 				<h3 class="unlock-heading">
 					<?php echo esc_html( $settings['heading_text'] ); ?>
