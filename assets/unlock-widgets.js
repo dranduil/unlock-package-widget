@@ -7,7 +7,6 @@ function getToken() {
     const match = document.cookie.match(/(^| )unlock_token=([^;]+)/);
     return match ? match[2] : null;
 }
-
 function hideSignupForm() {
     const form = document.querySelector("#unlock-signup-form");
     if (form) {
@@ -16,10 +15,13 @@ function hideSignupForm() {
 }
 
 /** ─── LOGIN ───────────────────────────────────────────── **/
-function doLogin() {
+function doLogin(e) {
+    e.preventDefault(); // blocca il comportamento predefinito del form
     const email = document.querySelector("#unlock-login-email")?.value;
     const password = document.querySelector("#unlock-login-password")?.value;
     const msgDiv = document.querySelector("#unlock-login-message");
+    const wrapper = document.querySelector(".unlock-login-wrapper");
+    const redirectUrl = wrapper?.dataset.redirectUrl || "";
 
     if (!email || !password) {
         if (msgDiv) msgDiv.innerText = "Email e password obbligatorie.";
@@ -39,8 +41,16 @@ function doLogin() {
         if (data.token) {
             setToken(data.token);
             if (msgDiv) msgDiv.innerText = "Login avvenuto con successo.";
+
+            // Redirect se configurato
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+                return;
+            }
+
+            // Altrimenti, carica pacchetti e profilo
             loadPackagesList();
-            loadUserProfile(); // subito dopo login carica anche profilo
+            loadUserProfile();
         } else {
             if (msgDiv) msgDiv.innerText = "Login fallito.";
         }
@@ -52,7 +62,8 @@ function doLogin() {
 }
 
 /** ─── SIGNUP ─────────────────────────────────────────── **/
-function doSignup() {
+function doSignup(e) {
+    e.preventDefault(); // blocca il submit predefinito
     const name     = document.querySelector("#unlock-signup-name")?.value;
     const surname  = document.querySelector("#unlock-signup-surname")?.value;
     const email    = document.querySelector("#unlock-signup-email")?.value;
@@ -60,6 +71,7 @@ function doSignup() {
     const confirm  = document.querySelector("#unlock-signup-password-confirm")?.value;
     const msgDiv   = document.querySelector("#unlock-signup-message");
     const wrapper  = document.querySelector(".unlock-signup-wrapper");
+    const redirectUrl = wrapper?.dataset.redirectUrl || "";
 
     if (!name || !surname || !email || !password || !confirm) {
         if (msgDiv) msgDiv.innerText = "Tutti i campi sono obbligatori.";
@@ -71,9 +83,9 @@ function doSignup() {
     }
 
     const payload = {
-        name:     name,
-        surname:  surname,
-        email:    email,
+        name: name,
+        surname: surname,
+        email: email,
         password: password,
         password_confirmation: confirm
     };
@@ -92,13 +104,14 @@ function doSignup() {
             setToken(data.token);
             if (msgDiv) msgDiv.innerText = "Registrazione avvenuta con successo.";
 
-            if (wrapper && wrapper.dataset.redirectUrl) {
-                window.location.href = wrapper.dataset.redirectUrl;
+            // Redirect se configurato
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
                 return;
             }
 
             hideSignupForm();
-            loadUserProfile(); // carica profilo appena registrato
+            loadUserProfile();
         } else {
             let errorMsg = "Registrazione fallita.";
             if (data.errors) {
@@ -343,21 +356,20 @@ function loadUserProfile() {
 }
 
 /** ─── SETUP EVENT LISTENERS ─────────────────────────────────────────────────┐ **/
-function setupunlockWidgets() {
-    // Login
-    const btnLogin = document.querySelector("#unlock-btn-login");
-    if (btnLogin) btnLogin.addEventListener("click", doLogin);
+function setupUnlockWidgets() {
+    // Login: intercetto il submit del form
+    const loginForm = document.querySelector("#unlock-login-form");
+    if (loginForm) {
+        loginForm.addEventListener("submit", doLogin);
+    }
 
     // Signup
     const signupForm = document.querySelector("#unlock-signup-form");
     if (signupForm) {
-        signupForm.addEventListener("submit", function(e) {
-            e.preventDefault();
-            doSignup();
-        });
+        signupForm.addEventListener("submit", doSignup);
     }
 
-    // Se l’utente è già loggato, nascondi il form di signup
+    // Se l’utente è già loggato, nascondi form di signup
     if (getToken()) {
         hideSignupForm();
     }
@@ -383,11 +395,11 @@ function setupunlockWidgets() {
         }
     });
 
-    // Carica profilo (se il widget esiste)
+    // Carica profilo (se esiste il widget)
     if (document.querySelector(".unlock-profile-wrapper")) {
         loadUserProfile();
     }
 }
 
-document.addEventListener("DOMContentLoaded", setupunlockWidgets);
+document.addEventListener("DOMContentLoaded", setupUnlockWidgets);
 /** ─────────────────────────────────────────────────────────────────────────────────────┘ **/

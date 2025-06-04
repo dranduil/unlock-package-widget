@@ -100,7 +100,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 1) Heading Color
+		// Heading Color
 		$this->add_control(
 			'heading_color',
 			[
@@ -113,7 +113,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 2) Heading Typography
+		// Heading Typography
 		$this->add_group_control(
 			\Elementor\Group_Control_Typography::get_type(),
 			[
@@ -123,7 +123,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 3) Heading Alignment
+		// Heading Alignment
 		$this->add_control(
 			'heading_alignment',
 			[
@@ -151,7 +151,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 4) Heading Margin (Box Control)
+		// Heading Margin
 		$this->add_responsive_control(
 			'heading_margin',
 			[
@@ -175,7 +175,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 1) Input Background Color
+		// Input Background Color
 		$this->add_control(
 			'input_background',
 			[
@@ -188,7 +188,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 2) Input Text Color
+		// Input Text Color
 		$this->add_control(
 			'input_text_color',
 			[
@@ -201,7 +201,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 3) Input Border Color
+		// Input Border Color
 		$this->add_control(
 			'input_border_color',
 			[
@@ -214,7 +214,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 4) Input Typography
+		// Input Typography
 		$this->add_group_control(
 			\Elementor\Group_Control_Typography::get_type(),
 			[
@@ -224,7 +224,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 5) Input Padding (Box Control)
+		// Input Padding
 		$this->add_responsive_control(
 			'input_padding',
 			[
@@ -237,7 +237,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 6) Input Margin Bottom
+		// Input Margin Bottom
 		$this->add_responsive_control(
 			'input_margin',
 			[
@@ -267,7 +267,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 1) Button Text Color
+		// Button Text Color
 		$this->add_control(
 			'button_text_color',
 			[
@@ -280,7 +280,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 2) Button Background Color
+		// Button Background Color
 		$this->add_control(
 			'button_background_color',
 			[
@@ -293,7 +293,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 3) Button Border Radius
+		// Button Border Radius
 		$this->add_responsive_control(
 			'button_border_radius',
 			[
@@ -312,7 +312,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 4) Button Typography
+		// Button Typography
 		$this->add_group_control(
 			\Elementor\Group_Control_Typography::get_type(),
 			[
@@ -322,7 +322,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 5) Button Padding
+		// Button Padding
 		$this->add_responsive_control(
 			'button_padding',
 			[
@@ -335,7 +335,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			]
 		);
 
-		// 6) Button Margin (Box Control)
+		// Button Margin
 		$this->add_responsive_control(
 			'button_margin',
 			[
@@ -353,14 +353,15 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 
 	protected function render() {
 		$settings     = $this->get_settings_for_display();
-		$redirect_url = ( ! empty( $settings['redirect_url']['url'] ) ) ? esc_url( $settings['redirect_url']['url'] ) : '';
+		$redirect_url = ( ! empty( $settings['redirect_url']['url'] ) )
+			? esc_url( $settings['redirect_url']['url'] )
+			: '';
+
 		?>
 		<div class="unlock-login-wrapper"
 		     <?php if ( $redirect_url ) : ?>data-redirect-url="<?php echo $redirect_url; ?>"<?php endif; ?>>
 			<?php if ( ! empty( $settings['heading_text'] ) ) : ?>
-				<h3 class="unlock-heading">
-					<?php echo esc_html( $settings['heading_text'] ); ?>
-				</h3>
+				<h3 class="unlock-heading"><?php echo esc_html( $settings['heading_text'] ); ?></h3>
 			<?php endif; ?>
 
 			<form id="unlock-login-form" class="unlock-form">
