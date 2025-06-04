@@ -40,8 +40,8 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Heading Text', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Accedi', 'unlock-elementor-widgets' ),
-				'placeholder' => __( 'Inserisci il testo dell’intestazione', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Sign in', 'unlock-elementor-widgets' ),
+				'placeholder' => __( 'Insert heading text here', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -52,7 +52,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 				'label'       => __( 'Email Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'default'     => __( 'Email', 'unlock-elementor-widgets' ),
-				'placeholder' => __( 'Inserisci il placeholder per Email', 'unlock-elementor-widgets' ),
+				'placeholder' => __( 'Insert email placeholder', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -63,7 +63,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 				'label'       => __( 'Password Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'default'     => __( 'Password', 'unlock-elementor-widgets' ),
-				'placeholder' => __( 'Inserisci il placeholder per Password', 'unlock-elementor-widgets' ),
+				'placeholder' => __( 'Insert password placeholder', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -74,7 +74,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 				'label'       => __( 'Button Text', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'default'     => __( 'Login', 'unlock-elementor-widgets' ),
-				'placeholder' => __( 'Inserisci il testo del pulsante', 'unlock-elementor-widgets' ),
+				'placeholder' => __( 'Insert button label', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -84,8 +84,8 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Redirect After Login', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::URL,
-				'placeholder' => __( 'https://tuosito.it/pagina-di-redirect', 'unlock-elementor-widgets' ),
-				'description' => __( 'Lascia vuoto per non reindirizzare', 'unlock-elementor-widgets' ),
+				'placeholder' => __( 'https://yoursite.com/redirect-page', 'unlock-elementor-widgets' ),
+				'description' => __( 'Leave empty to not redirect', 'unlock-elementor-widgets' ),
 			]
 		);
 
