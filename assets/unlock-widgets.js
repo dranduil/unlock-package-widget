@@ -357,29 +357,48 @@ function loadUserProfile() {
 
 /** ─── SETUP EVENT LISTENERS ─────────────────────────────────────────────────┐ **/
 function setupUnlockWidgets() {
-    // Login: intercetto il submit del form
+    // ───── REDIRECT SE GIÁ LOGGATO SULLA PAGINA DI LOGIN ─────
+    const loginWrapper = document.querySelector(".unlock-login-wrapper");
+    if (loginWrapper && getToken()) {
+        const redirectUrl = loginWrapper.dataset.redirectUrl || "";
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+            return;
+        }
+        // Se vuoi nascondere il form di login (ma di solito bastano i redirect)
+        document.querySelector("#unlock-login-form")?.style.display = "none";
+    }
+
+    // ───── REDIRECT SE GIÁ LOGGATO SULLA PAGINA DI SIGNUP ─────
+    const signupWrapper = document.querySelector(".unlock-signup-wrapper");
+    if (signupWrapper && getToken()) {
+        const redirectUrl = signupWrapper.dataset.redirectUrl || "";
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+            return;
+        }
+        // Se vuoi nascondere il form di signup
+        hideSignupForm();
+    }
+
+    // ───── LOGIN ─────────────────────────────────────────────
     const loginForm = document.querySelector("#unlock-login-form");
     if (loginForm) {
         loginForm.addEventListener("submit", doLogin);
     }
 
-    // Signup
+    // ───── SIGNUP ───────────────────────────────────────────
     const signupForm = document.querySelector("#unlock-signup-form");
     if (signupForm) {
         signupForm.addEventListener("submit", doSignup);
     }
 
-    // Se l’utente è già loggato, nascondi form di signup
-    if (getToken()) {
-        hideSignupForm();
-    }
-
-    // Lista pacchetti
+    // ───── LISTA PACCHETTI ─────────────────────────────────────
     if (document.querySelector("#unlock-packages-list")) {
         loadPackagesList();
     }
 
-    // Singolo pacchetto
+    // ───── SINGOLO PACCHETTO ───────────────────────────────────
     document.querySelectorAll("[id^='unlock-single-package-']").forEach(div => {
         const pkgId = div.getAttribute("data-package-id");
         if (pkgId) {
@@ -387,7 +406,7 @@ function setupUnlockWidgets() {
         }
     });
 
-    // Acquisto pacchetto (delegazione)
+    // ───── ACQUISTA PACCHETTO ───────────────────────────────────
     document.addEventListener("click", function(e) {
         if (e.target.matches(".unlock-buy-btn")) {
             const pkgId = e.target.getAttribute("data-id");
@@ -395,7 +414,7 @@ function setupUnlockWidgets() {
         }
     });
 
-    // Carica profilo (se esiste il widget)
+    // ───── PROFILE ───────────────────────────────────────────
     if (document.querySelector(".unlock-profile-wrapper")) {
         loadUserProfile();
     }
