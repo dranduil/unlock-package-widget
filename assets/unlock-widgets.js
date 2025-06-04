@@ -215,6 +215,138 @@ function doPurchase(pkgId) {
     });
 }
 
+// ─── PROFILE ───────────────────────────────────────────
+function loadUserProfile() {
+    const wrapper = document.querySelector(".unlock-profile-wrapper");
+    if (!wrapper) return;
+
+    const redirectUrl = wrapper.dataset.redirectUrl || "";
+    const contentDiv  = document.querySelector("#unlock-profile-content");
+    const token       = getToken();
+
+    // Se non loggato e c’è redirect, reindirizza subito
+    if (!token) {
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        } else {
+            if (contentDiv) {
+                contentDiv.innerHTML = "<p>Devi effettuare il login.</p>";
+            }
+        }
+        return;
+    }
+
+    // Load /user
+    fetch(`${API_BASE}/user`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        // data corrisponde alla struttura PHP fornita
+        // Costruiamo l’HTML di profilo
+        let html = "";
+
+        // Avatar e nome completo
+        html += `<div class="unlock-profile-header" style="display:flex; align-items:center; margin-bottom:20px;">`;
+        if (data.user.avatarUrl) {
+            html += `<img src="${data.user.avatarUrl}" alt="Avatar" class="unlock-profile-avatar" style="width:80px; height:80px; border-radius:50%; margin-right:15px;">`;
+        }
+        html += `<div class="unlock-profile-name">
+                    <h2 style="margin:0 0 5px 0;">${data.user.fullName}</h2>
+                    <p style="margin:0; color: #666;">Joined: ${data.user.joinDate}</p>
+                 </div>`;
+        html += `</div>`;
+
+        // Sezione base utente
+        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
+                    <h4 style="margin-bottom:10px;">Informazioni Utente</h4>
+                    <ul style="list-style:none; padding:0;">
+                      <li><strong>Email:</strong> ${data.user.email}</li>
+                      <li><strong>Phone:</strong> ${data.user.phone || '-'}</li>
+                      <li><strong>Job Title:</strong> ${data.user.jobTitle || '-'}</li>
+                      <li><strong>Location:</strong> ${data.location || '-'}</li>
+                      <li><strong>Company:</strong> ${data.company || '-'}</li>
+                      <li><strong>Roles:</strong> 
+                          <ul style="list-style:disc inside;">
+                            ${data.user.roles.map(r => `<li>${r.name}</li>`).join("")}
+                          </ul>
+                      </li>
+                    </ul>
+                 </div>`;
+
+        // Biografia e link
+        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
+                    <h4 style="margin-bottom:10px;">Biografia</h4>
+                    <p>${data.biography || "-"}</p>
+                    ${data.link ? `<p><strong>Link:</strong> <a href="${data.link}" target="_blank">${data.link}</a></p>` : ""}
+                 </div>`;
+
+        // Sottoscrizione
+        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
+                    <h4 style="margin-bottom:10px;">Subscription</h4>`;
+        if (data.subscription.plan && data.subscription.plan !== "none") {
+            html += `<p><strong>Plan:</strong> ${data.subscription.plan}</p>
+                     <p><strong>Renewal Date:</strong> ${data.subscription.renewalDate || "-"}</p>
+                     <p><strong>Features:</strong>
+                        <ul style="list-style:disc inside;">
+                          ${data.subscription.features.map(f => `<li>${f}</li>`).join("")}
+                        </ul>
+                     </p>`;
+        } else {
+            html += `<p>Nessuna sottoscrizione attiva.</p>`;
+        }
+        html += `</div>`;
+
+        // Metodi di pagamento
+        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
+                    <h4 style="margin-bottom:10px;">Payment Methods</h4>`;
+        if (data.paymentMethods && data.paymentMethods.length) {
+            html += `<ul style="list-style:disc inside;">`;
+            data.paymentMethods.forEach(pm => {
+                const isDefault = (data.paymentMethod && pm.id === data.paymentMethod.id) ? " (Default)" : "";
+                html += `<li>${pm.brand || pm.type || "–"} ending in ${pm.last4 || "-"} ${isDefault}</li>`;
+            });
+            html += `</ul>`;
+        } else {
+            html += `<p>Nessun metodo di pagamento registrato.</p>`;
+        }
+        html += `</div>`;
+
+        // Nazionalità e genere
+        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
+                    <h4 style="margin-bottom:10px;">Nationality & Gender</h4>
+                    <ul style="list-style:none; padding:0;">
+                      <li><strong>Nationality:</strong> ${data.nationality.name || "-" } (${data.nationality.code || "-"}) ${data.nationality.flagEmoji || ""}</li>
+                      <li><strong>Phone Code:</strong> ${data.nationality.phoneCode || "-"}</li>
+                      <li><strong>Gender:</strong> ${data.gender.name || "-"}</li>
+                    </ul>
+                 </div>`;
+
+        // Credits
+        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
+                    <h4 style="margin-bottom:10px;">Credits</h4>
+                    <p>${data.credits || 0}</p>
+                 </div>`;
+
+        // Info aggiuntive se presenti (biography già sopra)
+        // Puoi eventualmente aggiungere altri campi come id, link esterni, ecc.
+
+        if (contentDiv) {
+            contentDiv.innerHTML = html;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        if (contentDiv) {
+            contentDiv.innerHTML = "<p>Errore nel caricamento del profilo.</p>";
+        }
+    });
+}
+
+
 /** ───────────── EVENT LISTENERS ───────────── **/
 function setupunlockWidgets() {
     // Login
@@ -253,6 +385,14 @@ function setupunlockWidgets() {
         if (e.target.matches(".unlock-buy-btn")) {
             const pkgId = e.target.getAttribute("data-id");
             doPurchase(pkgId);
+        }
+    });
+
+    // All’interno di DOMContentLoaded, subito dopo le altre setup:
+    document.addEventListener("DOMContentLoaded", function() {
+        // Carica profilo se esiste il wrapper
+        if (document.querySelector(".unlock-profile-wrapper")) {
+            loadUserProfile();
         }
     });
 }

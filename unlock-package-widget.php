@@ -37,10 +37,15 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-signup.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-packages-list.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-single-package.php';
+	// Dentro add_action('elementor/widgets/register', … )
+	require_once plugin_dir_path( __FILE__ ) . 'includes/widget-unlock-profile.php';
+
+
 
 	// Registra ciascuna classe come widget
 	$widgets_manager->register( new \unlock_Widget_Login() );
 	$widgets_manager->register( new \unlock_Widget_Signup() );
 	$widgets_manager->register( new \unlock_Widget_Packages_List() );
 	$widgets_manager->register( new \unlock_Widget_Single_Package() );
+	$widgets_manager->register( new \Unlock_Widget_Profile() );
 } );
