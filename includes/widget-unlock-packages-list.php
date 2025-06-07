@@ -684,21 +684,25 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 							?>
 								<div class="unlock-package-card elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>" data-id="demo-<?php echo esc_attr( $index ); ?>">
 									<?php if ( ! empty( $item['pkg_image']['url'] ) ) : ?>
-										<img src="<?php echo esc_url( $item['pkg_image']['url'] ); ?>" alt="<?php echo esc_attr( $item['pkg_name'] ); ?>" class="unlock-package-image" style="width:100%;max-width:150px;height:auto;margin-bottom:10px;">
+                                        <div class="unlock-package-image-wrapper">
+										    <img src="<?php echo esc_url( $item['pkg_image']['url'] ); ?>" alt="<?php echo esc_attr( $item['pkg_name'] ); ?>" class="unlock-package-image">
+                                        </div>
 									<?php endif; ?>
-									<h4 class="unlock-package-name elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_setting_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_name'] ); ?></h4>
-									<div class="unlock-package-desc elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_desc_key ); ?>" data-elementor-inline-editing-toolbar="advanced"><?php echo nl2br( $item['pkg_description'] ); ?></div>
-									<div class="unlock-package-price elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_price_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_price'] ); ?></div>
-									<?php if ( ! empty( $item['pkg_features'] ) ) : ?>
-										<ul class="elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_features_key ); ?>" data-elementor-inline-editing-toolbar="advanced">
-											<?php
-											$features = explode( "\n", $item['pkg_features'] );
-											foreach ( $features as $feature ) :
-												?>
-												<li><?php echo esc_html( trim( $feature ) ); ?></li>
-											<?php endforeach; ?>
-										</ul>
-									<?php endif; ?>
+                                    <div class="unlock-package-content">
+    								<h4 class="unlock-package-name elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_setting_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_name'] ); ?></h4>
+    								<div class="unlock-package-desc elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_desc_key ); ?>" data-elementor-inline-editing-toolbar="advanced"><?php echo nl2br( $item['pkg_description'] ); ?></div>
+    								<div class="unlock-package-price elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_price_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_price'] ); ?></div>
+    								<?php if ( ! empty( $item['pkg_features'] ) ) : ?>
+    									<ul class="elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_features_key ); ?>" data-elementor-inline-editing-toolbar="advanced">
+    										<?php
+    										$features = explode( "\n", $item['pkg_features'] );
+    										foreach ( $features as $feature ) :
+    											?>
+    											<li><?php echo esc_html( trim( $feature ) ); ?></li>
+    										<?php endforeach; ?>
+    									</ul>
+    								<?php endif; ?>
+                                    </div>
                                     <div class="unlock-button-wrapper">
 									    <button class="unlock-buy-btn elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_button_text_key ); ?>" data-elementor-inline-editing-toolbar="basic" data-id="demo-<?php echo esc_attr( $index ); ?>"><?php echo esc_html( $item['pkg_button_text'] ); ?></button>
                                     </div>
@@ -709,23 +713,58 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 							.unlock-packages-grid {
 								display: flex;
 								flex-wrap: wrap;
-								gap: 20px;
+								gap: 2em; /* This will be the gap between cards */
 							}
 							.unlock-package-card {
+                                background-color: #fff;
 								flex: 0 1 calc(50% - 1em); /* Adjust for 2 columns with gap */
 								box-sizing: border-box; /* Include padding and border in the element's total width and height */
                                 display: flex;
                                 flex-direction: column;
-                                justify-content: space-between;
-                                height: 100%;
+                                /* justify-content: space-between; Removed to allow natural flow */
+                                border-radius: 12px; /* Material 3 like border radius */
+                                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Material 3 like shadow */
+                                transition: box-shadow 0.3s ease-in-out;
+                                overflow: hidden; /* Ensures image corners are also rounded if image is at the very top */
 							}
-                            .unlock-packages-grid {
+                            .unlock-package-card:hover {
+                                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08); /* Enhanced shadow on hover */
+                            }
+                            .unlock-package-image-wrapper {
+                                width: 100%;
+                                height: 200px; /* Fixed height for image container */
+                                overflow: hidden; /* Clip image if it's larger than container */
+                                background-color: #f0f0f0; /* Placeholder background */
+                            }
+                            .unlock-package-image {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover; /* Ensures the image covers the area, cropping if necessary */
+                                display: block;
+                            }
+                            .unlock-package-content {
+                                padding: 1.5em;
                                 display: flex;
-                                flex-wrap: wrap;
-                                gap: 2em; /* This will be the gap between cards */
+                                flex-direction: column;
+                                flex-grow: 1; /* Allows content to take available space */
+                            }
+                            .unlock-package-name {
+                                margin-top: 0;
                             }
                             .unlock-button-wrapper {
-                                margin-top: auto; /* Pushes button to the bottom if content above varies */
+                                margin-top: auto; /* Pushes button to the bottom */
+                                padding-top: 1em; /* Add some space above the button */
+                            }
+                            .unlock-buy-btn {
+                                /* Basic button styling, can be expanded */
+                                display: block;
+                                width: 100%;
+                                padding: 0.8em 1em;
+                                text-align: center;
+                                border: none;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;
                             }
 						</style>
 					<?php else : ?>
