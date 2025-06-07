@@ -39,14 +39,16 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
         $this->add_control(
             'redirect_url',
             [
-                'label'       => __( 'Redirect If Not Logged In', 'unlock-elementor-widgets' ),
-                'type'        => \Elementor\Controls_Manager::URL,
-                'placeholder' => __( '/login', 'unlock-elementor-widgets' ),
-                'description' => __( 'Se l’utente non è autenticato, verrà reindirizzato a questo URL. Lascia vuoto per non reindirizzare.', 'unlock-elementor-widgets' ),
+                'label'       => __( 'Redirect URL if not logged in', 'unlock-elementor-widgets' ),
+                'type'        => \Elementor\Controls_Manager::TEXT,
+                'input_type'  => 'url',
+                'placeholder' => __( 'e.g., /login', 'unlock-elementor-widgets' ),
+                'default'     => '/',
+                'description' => __( 'Enter the URL (e.g., /login or full https://...) to redirect to if the user is not logged in. Defaults to homepage (/).', 'unlock-elementor-widgets' ),
             ]
         );
 
-        // Sezioni on/off
+        // Section: Visibility Settings
         $sections = [
             'avatar'       => __( 'Avatar', 'unlock-elementor-widgets' ),
             'fullname'     => __( 'Full Name', 'unlock-elementor-widgets' ),
@@ -368,6 +370,330 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                     '{{WRAPPER}} .unlock-profile-section' => 'margin-bottom: {{SIZE}}{{UNIT}};',
                 ],
                 'default'    => [ 'size' => 20 ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // ───── STYLE TAB: Avatar ─────
+        $this->start_controls_section(
+            'section_style_avatar',
+            [
+                'label' => __( 'Avatar', 'unlock-elementor-widgets' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => [ 'show_avatar' => 'yes' ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'avatar_size_slider', // Renamed from avatar_size to avoid conflict if old one is still cached by Elementor
+            [
+                'label'      => __( 'Avatar Size', 'unlock-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [
+                    'px' => [
+                        'min' => 30,
+                        'max' => 300,
+                    ],
+                ],
+                'default'    => [
+                    'unit' => 'px',
+                    'size' => 80,
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .unlock-profile-avatar' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'avatar_border_radius',
+            [
+                'label'      => __( 'Avatar Border Radius', 'unlock-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%' ],
+                'default' => [
+                    'top' => '50',
+                    'right' => '50',
+                    'bottom' => '50',
+                    'left' => '50',
+                    'unit' => '%',
+                    'isLinked' => true,
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .unlock-profile-avatar' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            [
+                'name' => 'avatar_border',
+                'label' => __( 'Avatar Border', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-avatar',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'avatar_margin',
+            [
+                'label'      => __( 'Avatar Margin', 'unlock-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .unlock-profile-avatar' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // ───── STYLE TAB: Profile Fields ─────
+        $this->start_controls_section(
+            'section_style_profile_fields',
+            [
+                'label' => __( 'Profile Fields', 'unlock-elementor-widgets' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        // --- Full Name Styling ---
+        $this->add_control(
+            'heading_fullname_style',
+            [
+                'label' => __( 'Full Name', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+                'condition'   => [ 'show_fullname' => 'yes' ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'fullname_typography',
+                'label' => __( 'Full Name Typography', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-fullname, {{WRAPPER}} .unlock-profile-name h2', // Target both potential classes
+                'condition'   => [ 'show_fullname' => 'yes' ],
+            ]
+        );
+
+        $this->add_control(
+            'fullname_color',
+            [
+                'label' => __( 'Full Name Color', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-fullname, {{WRAPPER}} .unlock-profile-name h2' => 'color: {{VALUE}};'
+                ],
+                'condition'   => [ 'show_fullname' => 'yes' ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'fullname_margin',
+            [
+                'label'      => __( 'Full Name Margin', 'unlock-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .unlock-profile-fullname, {{WRAPPER}} .unlock-profile-name h2' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'condition'   => [ 'show_fullname' => 'yes' ],
+            ]
+        );
+
+        // --- Email Styling ---
+        $this->add_control(
+            'heading_email_style',
+            [
+                'label' => __( 'Email', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+                'condition'   => [ 'show_email' => 'yes' ],
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'email_typography',
+                'label' => __( 'Email Typography', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-email-label, {{WRAPPER}} .unlock-profile-email-value',
+                'condition'   => [ 'show_email' => 'yes' ],
+            ]
+        );
+        $this->add_control(
+            'email_label_color',
+            [
+                'label' => __( 'Email Label Color', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-email-label' => 'color: {{VALUE}};'
+                ],
+                'condition'   => [ 'show_email' => 'yes' ],
+            ]
+        );
+        $this->add_control(
+            'email_value_color',
+            [
+                'label' => __( 'Email Value Color', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-email-value' => 'color: {{VALUE}};'
+                ],
+                'condition'   => [ 'show_email' => 'yes' ],
+            ]
+        );
+        $this->add_responsive_control(
+            'email_spacing',
+            [
+                'label' => __( 'Email Field Spacing (Bottom)', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'em' ],
+                'range' => [
+                    'px' => ['min' => 0, 'max' => 50],
+                    'em' => ['min' => 0, 'max' => 5, 'step' => 0.1],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-field-email' => 'margin-bottom: {{SIZE}}{{UNIT}};'
+                ],
+                'condition'   => [ 'show_email' => 'yes' ],
+            ]
+        );
+
+        // --- Generic Field Label Styling ---
+        $this->add_control(
+            'heading_field_label_style',
+            [
+                'label' => __( 'Field Labels (Generic)', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'field_label_typography',
+                'label' => __( 'Typography', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-field-label, {{WRAPPER}} .unlock-profile-section ul li strong',
+            ]
+        );
+        $this->add_control(
+            'field_label_color',
+            [
+                'label' => __( 'Color', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-field-label, {{WRAPPER}} .unlock-profile-section ul li strong' => 'color: {{VALUE}};'
+                ],
+            ]
+        );
+
+        // --- Generic Field Value Styling ---
+        $this->add_control(
+            'heading_field_value_style',
+            [
+                'label' => __( 'Field Values (Generic)', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'field_value_typography',
+                'label' => __( 'Typography', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-field-value, {{WRAPPER}} .unlock-profile-section ul li',
+            ]
+        );
+        $this->add_control(
+            'field_value_color',
+            [
+                'label' => __( 'Color', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-field-value, {{WRAPPER}} .unlock-profile-section ul li' => 'color: {{VALUE}};'
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'field_item_spacing',
+            [
+                'label' => __( 'Field Item Spacing (Bottom)', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'em' ],
+                'range' => [
+                    'px' => ['min' => 0, 'max' => 50],
+                    'em' => ['min' => 0, 'max' => 3, 'step' => 0.1],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-profile-section ul li, {{WRAPPER}} .unlock-profile-field' => 'margin-bottom: {{SIZE}}{{UNIT}};'
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // ───── STYLE TAB: Wrapper Container ─────
+        $this->start_controls_section(
+            'section_style_wrapper',
+            [
+                'label' => __( 'Wrapper Container', 'unlock-elementor-widgets' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Background::get_type(),
+            [
+                'name' => 'wrapper_background',
+                'label' => __( 'Background', 'unlock-elementor-widgets' ),
+                'types' => [ 'classic', 'gradient' ],
+                'selector' => '{{WRAPPER}} .unlock-profile-wrapper',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'wrapper_padding',
+            [
+                'label'      => __( 'Padding', 'unlock-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .unlock-profile-wrapper' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            [
+                'name' => 'wrapper_border',
+                'label' => __( 'Border', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-wrapper',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'wrapper_border_radius',
+            [
+                'label'      => __( 'Border Radius', 'unlock-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .unlock-profile-wrapper' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'wrapper_box_shadow',
+                'label' => __( 'Box Shadow', 'unlock-elementor-widgets' ),
+                'selector' => '{{WRAPPER}} .unlock-profile-wrapper',
             ]
         );
 

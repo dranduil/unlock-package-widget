@@ -82,10 +82,25 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 		$this->add_control(
 			'redirect_url',
 			[
-				'label'       => __( 'Redirect After Login', 'unlock-elementor-widgets' ),
-				'type'        => \Elementor\Controls_Manager::URL,
-				'placeholder' => __( 'https://yoursite.com/redirect-page', 'unlock-elementor-widgets' ),
-				'description' => __( 'Leave empty to not redirect', 'unlock-elementor-widgets' ),
+				'label'       => __( 'Redirect URL After Login', 'unlock-elementor-widgets' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'input_type'  => 'url',
+				'placeholder' => __( 'e.g., /dashboard', 'unlock-elementor-widgets' ),
+				'default'     => '/',
+				'description' => __( 'Enter the URL to redirect to after successful login. Defaults to homepage (/).', 'unlock-elementor-widgets' ),
+			]
+		);
+
+		// 6) Redirect URL if already logged in
+		$this->add_control(
+			'redirect_url_if_logged_in',
+			[
+				'label'       => __( 'Redirect URL If Already Logged In', 'unlock-elementor-widgets' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'input_type'  => 'url',
+				'placeholder' => __( 'e.g., /account', 'unlock-elementor-widgets' ),
+				'default'     => '/',
+				'description' => __( 'If the user is already logged in, redirect to this URL. Defaults to homepage (/). This is handled by the JavaScript.', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -352,14 +367,14 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 	}
 
 	protected function render() {
-		$settings     = $this->get_settings_for_display();
-		$redirect_url = ( ! empty( $settings['redirect_url']['url'] ) )
-			? esc_url( $settings['redirect_url']['url'] )
-			: '';
+		$settings = $this->get_settings_for_display();
+		$redirect_url_after_login = ! empty( $settings['redirect_url'] ) ? esc_url( $settings['redirect_url'] ) : '';
+		$redirect_url_if_logged_in = ! empty( $settings['redirect_url_if_logged_in'] ) ? esc_url( $settings['redirect_url_if_logged_in'] ) : '';
 
 		?>
 		<div class="unlock-login-wrapper"
-		     <?php if ( $redirect_url ) : ?>data-redirect-url="<?php echo $redirect_url; ?>"<?php endif; ?>>
+		     <?php if ( $redirect_url_after_login ) : ?>data-redirect-url="<?php echo $redirect_url_after_login; ?>"<?php endif; ?>
+		     <?php if ( $redirect_url_if_logged_in ) : ?>data-redirect-url-if-logged-in="<?php echo $redirect_url_if_logged_in; ?>"<?php endif; ?>>
 			<?php if ( ! empty( $settings['heading_text'] ) ) : ?>
 				<h3 class="unlock-heading"><?php echo esc_html( $settings['heading_text'] ); ?></h3>
 			<?php endif; ?>

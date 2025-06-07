@@ -1,4 +1,4 @@
-const API_BASE = "https://api.flexa.life/api";
+const API_BASE = "https://api.unlockthemove.com/api";
 
 function setToken(token) {
     document.cookie = `unlock_token=${token}; path=/`;
@@ -21,7 +21,8 @@ function doLogin(e) {
     const password = document.querySelector("#unlock-login-password")?.value;
     const msgDiv = document.querySelector("#unlock-login-message");
     const wrapper = document.querySelector(".unlock-login-wrapper");
-    const redirectUrl = wrapper?.dataset.redirectUrl || "";
+    // 'redirectUrl' is for after successful login
+    const redirectUrl = wrapper?.dataset.redirectUrl || "/"; // Default to '/' if not set
 
     if (!email || !password) {
         if (msgDiv) msgDiv.innerText = "Email e password obbligatorie.";
@@ -71,7 +72,8 @@ function doSignup(e) {
     const confirm  = document.querySelector("#unlock-signup-password-confirm")?.value;
     const msgDiv   = document.querySelector("#unlock-signup-message");
     const wrapper  = document.querySelector(".unlock-signup-wrapper");
-    const redirectUrl = wrapper?.dataset.redirectUrl || "";
+    // 'redirectUrl' is for after successful signup
+    const redirectUrl = wrapper?.dataset.redirectUrl || "/"; // Default to '/' if not set
 
     if (!name || !surname || !email || !password || !confirm) {
         if (msgDiv) msgDiv.innerText = "Tutti i campi sono obbligatori.";
@@ -138,7 +140,7 @@ function loadPackagesList() {
     const token = getToken();
     container.innerHTML = "<p>Caricamento pacchetti…</p>";
 
-    fetch(`${API_BASE}/packages`, {
+    fetch(`${API_BASE}/stripe/packages`, {
         headers: token
             ? { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
             : { "Accept": "application/json" }
@@ -181,7 +183,7 @@ function loadSinglePackage(pkgId) {
     const token = getToken();
     container.innerHTML = "<p>Caricamento dettagli…</p>";
 
-    fetch(`${API_BASE}/packages/${pkgId}`, {
+    fetch(`${API_BASE}/stripe/packages/${pkgId}`, {
         headers: token
             ? { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
             : { "Accept": "application/json" }
@@ -261,87 +263,145 @@ function loadUserProfile() {
     .then(data => {
         let html = "";
 
+        const settings = JSON.parse(document.querySelector('.unlock-profile-settings')?.dataset.settings || '{}');
+
+        // Helper function to generate a field item
+        const createField = (label, value, labelKey, valueKey, sectionKey, showFlag) => {
+            if (settings[showFlag] === 'yes') {
+                const customLabel = settings[labelKey] || label;
+                return `<div class="unlock-profile-field unlock-profile-field-${sectionKey.toLowerCase().replace('_', '-')}">
+                          <span class="unlock-profile-field-label">${customLabel}:</span> 
+                          <span class="unlock-profile-field-value">${value || '-'}</span>
+                        </div>`;
+            }
+            return '';
+        };
+
         // Header con avatar e nome
-        html += `<div class="unlock-profile-header" style="display:flex; align-items:center; margin-bottom:20px;">`;
-        if (data.user.avatarUrl) {
-            html += `<img src="${data.user.avatarUrl}" alt="Avatar" class="unlock-profile-avatar" style="width:80px; height:80px; border-radius:50%; margin-right:15px;">`;
+        html += `<div class="unlock-profile-header">`;
+        if (settings.show_avatar === 'yes' && data.user.avatarUrl) {
+            html += `<img src="${data.user.avatarUrl}" alt="Avatar" class="unlock-profile-avatar">`;
         }
-        html += `<div class="unlock-profile-name">
-                    <h2 style="margin:0 0 5px 0;">${data.user.fullName}</h2>
-                    <p style="margin:0; color:#666;">Joined: ${data.user.joinDate}</p>
-                 </div>`;
-        html += `</div>`;
-
-        // Informazioni generali
-        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
-                    <h4 style="margin-bottom:10px;">Informazioni Utente</h4>
-                    <ul style="list-style:none; padding:0;">
-                      <li><strong>Email:</strong> ${data.user.email}</li>
-                      <li><strong>Phone:</strong> ${data.user.phone || '-'}</li>
-                      <li><strong>Job Title:</strong> ${data.user.jobTitle || '-'}</li>
-                      <li><strong>Location:</strong> ${data.location || '-'}</li>
-                      <li><strong>Company:</strong> ${data.company || '-'}</li>
-                      <li><strong>Roles:</strong> 
-                          <ul style="list-style:disc inside; margin:0; padding-left:20px;">
-                            ${data.user.roles.map(r => `<li>${r.name}</li>`).join("")}
-                          </ul>
-                      </li>
-                    </ul>
-                 </div>`;
-
-        // Biografia e link
-        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
-                    <h4 style="margin-bottom:10px;">Biografia</h4>
-                    <p>${data.biography || "-"}</p>
-                    ${data.link ? `<p><strong>Link:</strong> <a href="${data.link}" target="_blank">${data.link}</a></p>` : ""}
-                 </div>`;
-
-        // Sottoscrizione
-        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
-                    <h4 style="margin-bottom:10px;">Subscription</h4>`;
-        if (data.subscription.plan && data.subscription.plan !== "none") {
-            html += `<p><strong>Plan:</strong> ${data.subscription.plan}</p>
-                     <p><strong>Renewal Date:</strong> ${data.subscription.renewalDate || "-"}</p>
-                     <p><strong>Features:</strong>
-                        <ul style="list-style:disc inside; margin:0; padding-left:20px;">
-                          ${data.subscription.features.map(f => `<li>${f}</li>`).join("")}
-                        </ul>
-                     </p>`;
-        } else {
-            html += `<p>Nessuna sottoscrizione attiva.</p>`;
+        html += `<div class="unlock-profile-name-details">`;
+        if (settings.show_fullname === 'yes'){
+            html += `<h2 class="unlock-profile-fullname">${data.user.fullName}</h2>`;
         }
-        html += `</div>`;
-
-        // Metodi di pagamento
-        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
-                    <h4 style="margin-bottom:10px;">Payment Methods</h4>`;
-        if (data.paymentMethods && data.paymentMethods.length) {
-            html += `<ul style="list-style:disc inside; margin:0; padding-left:20px;">`;
-            data.paymentMethods.forEach(pm => {
-                const isDefault = (data.paymentMethod && pm.id === data.paymentMethod.id) ? " (Default)" : "";
-                html += `<li>${pm.brand || pm.type || "–"} ending in ${pm.last4 || "-"}${isDefault}</li>`;
-            });
-            html += `</ul>`;
-        } else {
-            html += `<p>Nessun metodo di pagamento registrato.</p>`;
+        if (settings.show_join_date === 'yes'){
+            const joinDateLabel = settings.label_join_date || 'Joined';
+            html += `<p class="unlock-profile-joindate"><span class="unlock-profile-field-label">${joinDateLabel}:</span> <span class="unlock-profile-field-value">${data.user.joinDate}</span></p>`;
         }
-        html += `</div>`;
+        html += `</div></div>`; // .unlock-profile-name-details, .unlock-profile-header
 
-        // Nazionalità e genere
-        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
-                    <h4 style="margin-bottom:10px;">Nationality & Gender</h4>
-                    <ul style="list-style:none; padding:0;">
-                      <li><strong>Nationality:</strong> ${data.nationality.name || "-" } (${data.nationality.code || "-"}) ${data.nationality.flagEmoji || ""}</li>
-                      <li><strong>Phone Code:</strong> ${data.nationality.phoneCode || "-"}</li>
-                      <li><strong>Gender:</strong> ${data.gender.name || "-"}</li>
-                    </ul>
-                 `;
+        // Informazioni Utente Section
+        let userInfoHtml = '';
+        userInfoHtml += createField(settings.label_email || 'Email', data.user.email, 'label_email', 'value_email', 'email', 'show_email');
+        userInfoHtml += createField(settings.label_phone || 'Phone', data.user.phone, 'label_phone', 'value_phone', 'phone', 'show_phone');
+        userInfoHtml += createField(settings.label_job_title || 'Job Title', data.user.jobTitle, 'label_job_title', 'value_job_title', 'job_title', 'show_job_title');
+        userInfoHtml += createField(settings.label_location || 'Location', data.location, 'label_location', 'value_location', 'location', 'show_location');
+        userInfoHtml += createField(settings.label_company || 'Company', data.company, 'label_company', 'value_company', 'company', 'show_company');
+        
+        if (settings.show_roles === 'yes' && data.user.roles && data.user.roles.length > 0) {
+            const rolesLabel = settings.label_roles || 'Roles';
+            userInfoHtml += `<div class="unlock-profile-field unlock-profile-field-roles">
+                               <span class="unlock-profile-field-label">${rolesLabel}:</span> 
+                               <ul class="unlock-profile-field-value unlock-profile-roles-list">
+                                 ${data.user.roles.map(r => `<li>${r.name}</li>`).join("")}
+                               </ul>
+                             </div>`;
+        }
 
-        // Credits
-        html += `<div class="unlock-profile-section" style="margin-bottom:20px;">
-                    <h4 style="margin-bottom:10px;">Credits</h4>
-                    <p>${data.credits || 0}</p>
-                 </div>`;
+        if (userInfoHtml) {
+            html += `<div class="unlock-profile-section unlock-profile-user-info">
+                        <h4 class="unlock-section-title">${settings.label_user_info_heading || 'User Information'}</h4>
+                        ${userInfoHtml}
+                     </div>`;
+        }
+
+        // Biografia e Link Section
+        let bioHtml = '';
+        if (settings.show_biography === 'yes') {
+            const bioLabel = settings.label_biography || 'Biography';
+            bioHtml += `<div class="unlock-profile-field unlock-profile-field-biography">
+                          <span class="unlock-profile-field-label">${bioLabel}:</span> 
+                          <p class="unlock-profile-field-value">${data.biography || "-"}</p>
+                        </div>`;
+        }
+        if (settings.show_link === 'yes' && data.link) {
+            const linkLabel = settings.label_link || 'Link';
+            bioHtml += `<div class="unlock-profile-field unlock-profile-field-link">
+                          <span class="unlock-profile-field-label">${linkLabel}:</span> 
+                          <a class="unlock-profile-field-value" href="${data.link}" target="_blank">${data.link}</a>
+                        </div>`;
+        }
+        if (bioHtml) {
+             html += `<div class="unlock-profile-section unlock-profile-bio-link">
+                        <h4 class="unlock-section-title">${settings.label_bio_link_heading || 'Details'}</h4>
+                        ${bioHtml}
+                      </div>`;
+        }
+
+        // Sottoscrizione Section
+        if (settings.show_subscription === 'yes') {
+            html += `<div class="unlock-profile-section unlock-profile-subscription">
+                        <h4 class="unlock-section-title">${settings.label_subscription_heading || 'Subscription'}</h4>`;
+            if (data.subscription.plan && data.subscription.plan !== "none") {
+                html += createField(settings.label_subscription_plan || 'Plan', data.subscription.plan, 'label_subscription_plan', 'value_subscription_plan', 'subscription_plan', 'show_subscription'); // Assuming show_subscription controls the whole section
+                html += createField(settings.label_subscription_renewal || 'Renewal Date', data.subscription.renewalDate, 'label_subscription_renewal', 'value_subscription_renewal', 'subscription_renewal', 'show_subscription');
+                if (data.subscription.features && data.subscription.features.length > 0) {
+                     html += `<div class="unlock-profile-field unlock-profile-field-subscription-features">
+                                <span class="unlock-profile-field-label">${settings.label_subscription_features || 'Features'}:</span>
+                                <ul class="unlock-profile-field-value unlock-profile-features-list">
+                                  ${data.subscription.features.map(f => `<li>${f}</li>`).join("")}
+                                </ul>
+                              </div>`;
+                }
+            } else {
+                html += `<p class="unlock-profile-field-value">${settings.label_no_subscription || 'No active subscription.'}</p>`;
+            }
+            html += `</div>`;
+        }
+
+        // Metodi di Pagamento Section
+        if (settings.show_payment_methods === 'yes') {
+            html += `<div class="unlock-profile-section unlock-profile-payment-methods">
+                        <h4 class="unlock-section-title">${settings.label_payment_methods_heading || 'Payment Methods'}</h4>`;
+            if (data.paymentMethods && data.paymentMethods.length) {
+                html += `<ul class="unlock-profile-field-value unlock-profile-payment-list">`;
+                data.paymentMethods.forEach(pm => {
+                    const isDefault = (data.paymentMethod && pm.id === data.paymentMethod.id) ? " (Default)" : "";
+                    html += `<li>${pm.brand || pm.type || "–"} ending in ${pm.last4 || "-"}${isDefault}</li>`;
+                });
+                html += `</ul>`;
+            } else {
+                html += `<p class="unlock-profile-field-value">${settings.label_no_payment_methods || 'No payment methods registered.'}</p>`;
+            }
+            html += `</div>`;
+        }
+
+        // Nazionalità e Genere Section
+        let natGenderHtml = '';
+        if (settings.show_nationality === 'yes') {
+             natGenderHtml += createField(settings.label_nationality || 'Nationality', `${data.nationality?.name || "-"} (${data.nationality?.code || "-"}) ${data.nationality?.flagEmoji || ""}`, 'label_nationality', 'value_nationality', 'nationality', 'show_nationality');
+             natGenderHtml += createField(settings.label_phone_code || 'Phone Code', data.nationality?.phoneCode || "-", 'label_phone_code', 'value_phone_code', 'phone_code', 'show_nationality'); // Assuming show_nationality controls this too
+        }
+        if (settings.show_gender === 'yes') {
+            natGenderHtml += createField(settings.label_gender || 'Gender', data.gender?.name || "-", 'label_gender', 'value_gender', 'gender', 'show_gender');
+        }
+        if (natGenderHtml) {
+            html += `<div class="unlock-profile-section unlock-profile-nat-gender">
+                        <h4 class="unlock-section-title">${settings.label_nat_gender_heading || 'Demographics'}</h4>
+                        ${natGenderHtml}
+                     </div>`;
+        }
+
+        // Credits Section
+        if (settings.show_credits === 'yes') {
+            html += `<div class="unlock-profile-section unlock-profile-credits">
+                        <h4 class="unlock-section-title">${settings.label_credits_heading || 'Credits'}</h4>
+                        ${createField(settings.label_credits || 'Credits', data.credits || 0, 'label_credits', 'value_credits', 'credits', 'show_credits')}
+                     </div>`;
+        }
+
 
         if (contentDiv) {
             contentDiv.innerHTML = html;
@@ -357,27 +417,30 @@ function loadUserProfile() {
 
 /** ─── SETUP EVENT LISTENERS ─────────────────────────────────────────────────┐ **/
 function setupUnlockWidgets() {
+    const token = getToken();
+
     // ───── REDIRECT SE GIÁ LOGGATO SULLA PAGINA DI LOGIN ─────
     const loginWrapper = document.querySelector(".unlock-login-wrapper");
-    if (loginWrapper && getToken()) {
-        const redirectUrl = loginWrapper.dataset.redirectUrl || "";
-        if (redirectUrl) {
-            window.location.href = redirectUrl;
-            return;
+    if (loginWrapper && token) {
+        const redirectUrlIfLoggedIn = loginWrapper.dataset.redirectUrlIfLoggedIn || "/"; // Default to '/' if not set
+        if (redirectUrlIfLoggedIn) {
+            window.location.href = redirectUrlIfLoggedIn;
+            return; // Stop further processing if redirected
         }
-        // Se vuoi nascondere il form di login (ma di solito bastano i redirect)
-        document.querySelector("#unlock-login-form")?.style.display = "none";
+        // Fallback: hide form if no specific redirect for logged-in users, though redirect is preferred
+        const loginFormEl = document.querySelector("#unlock-login-form");
+        if (loginFormEl) loginFormEl.style.display = "none";
     }
 
     // ───── REDIRECT SE GIÁ LOGGATO SULLA PAGINA DI SIGNUP ─────
     const signupWrapper = document.querySelector(".unlock-signup-wrapper");
-    if (signupWrapper && getToken()) {
-        const redirectUrl = signupWrapper.dataset.redirectUrl || "";
-        if (redirectUrl) {
-            window.location.href = redirectUrl;
-            return;
+    if (signupWrapper && token) {
+        const redirectUrlIfLoggedIn = signupWrapper.dataset.redirectUrlIfLoggedIn || "/"; // Default to '/' if not set
+        if (redirectUrlIfLoggedIn) {
+            window.location.href = redirectUrlIfLoggedIn;
+            return; // Stop further processing if redirected
         }
-        // Se vuoi nascondere il form di signup
+        // Fallback: hide form if no specific redirect for logged-in users
         hideSignupForm();
     }
 
