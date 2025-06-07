@@ -669,6 +669,136 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 		?>
+		<style>
+			.unlock-packages-wrapper .unlock-heading {
+				/* Styles for the main title can be controlled by Elementor settings */
+				margin-bottom: 1.5em;
+			}
+			.unlock-packages-grid {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 1.5em; /* Spacing between cards */
+			}
+			.unlock-package-card {
+				flex: 0 1 calc(50% - 0.75em); /* Two columns with spacing */
+				box-sizing: border-box;
+				display: flex;
+				flex-direction: column;
+				background: #ffffff;
+				border-radius: 12px; 
+				box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+				transition: box-shadow 0.25s ease-in-out, transform 0.25s ease-in-out;
+				overflow: hidden;
+			}
+			.unlock-package-card:hover {
+				box-shadow: 0 6px 12px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.06);
+				transform: translateY(-4px);
+			}
+			.unlock-package-image-wrapper {
+				width: 100%;
+				height: 160px; /* Adjusted height for image */
+				overflow: hidden;
+				background-color: #f8f9fa; /* Light placeholder background */
+			}
+			.unlock-package-image {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+			}
+			.unlock-package-content-wrapper {
+				padding: 1em 1.25em 1.25em;
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+			}
+			.unlock-package-name {
+				font-size: 1.05em;
+				font-weight: 600;
+				color: #343a40;
+				margin: 0 0 0.35em 0;
+				line-height: 1.35;
+			}
+			/* Using features as meta data like in the image */
+			.unlock-package-meta-data {
+				font-size: 0.8em;
+				color: #6c757d;
+				margin-bottom: 0.75em;
+				line-height: 1.4;
+			}
+			.unlock-package-meta-data ul {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.unlock-package-meta-data li {
+				display: inline-block; /* Or block if you want them stacked */
+				margin-right: 0.75em; /* Space between meta items if inline */
+				/* Add icons here if desired: e.g. content: '\f073'; font-family: 'Font Awesome 5 Free'; */
+			}
+			.unlock-package-description {
+				font-size: 0.85em;
+				color: #495057;
+				margin-bottom: 1em;
+				line-height: 1.5;
+				flex-grow: 1; /* Pushes footer down */
+			}
+			.unlock-package-footer {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end; /* Align items to the bottom of the flex container */
+				margin-top: auto; 
+				padding-top: 0.75em;
+				/* border-top: 1px solid #dee2e6; /* Optional separator */
+			}
+			.unlock-package-price-wrapper {
+				text-align: left;
+			}
+			.unlock-package-price-label {
+				display: block;
+				font-size: 0.75em;
+				color: #6c757d;
+				margin-bottom: 0.1em;
+				line-height: 1;
+			}
+			.unlock-package-price {
+				font-size: 1.6em;
+				font-weight: 700;
+				color: #212529;
+				line-height: 1;
+			}
+			.unlock-buy-btn-wrapper {
+				/* Wrapper for button if needed for alignment */
+			}
+			.unlock-buy-btn {
+				padding: 0.4em 0.9em;
+				font-size: 0.85em;
+				/* background-color: transparent; /* Example: Ghost button */
+				/* color: #007bff; */
+				/* border: 1px solid #007bff; */
+				background-color: #0d6efd; /* Bootstrap primary blue */
+				color: white;
+				border: 1px solid #0d6efd;
+				border-radius: 6px;
+				cursor: pointer;
+				transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+				text-decoration: none;
+				font-weight: 500;
+				line-height: 1.5;
+			}
+			.unlock-buy-btn:hover {
+				background-color: #0b5ed7;
+				border-color: #0a58ca;
+				color: white;
+			}
+			/* Responsive adjustments */
+			@media (max-width: 767px) { /* Small devices (tablets, 768px and down) */
+				.unlock-package-card {
+					flex: 0 1 100%; /* Single column on smaller screens */
+				}
+			}
+		</style>
+
 		<div class="unlock-packages-wrapper">
 			<h3 class="unlock-heading elementor-inline-editing" data-elementor-setting-key="list_title" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $settings['list_title'] ); ?></h3>
 			<div id="unlock-packages-list">
@@ -676,97 +806,58 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 					<?php if ( ! empty( $settings['packages_list_items'] ) ) : ?>
 						<div class="unlock-packages-grid">
 							<?php foreach ( $settings['packages_list_items'] as $index => $item ) : 
-								$repeater_setting_key = $this->get_repeater_setting_key( 'pkg_name', 'packages_list_items', $index );
-								$repeater_desc_key = $this->get_repeater_setting_key( 'pkg_description', 'packages_list_items', $index );
-								$repeater_price_key = $this->get_repeater_setting_key( 'pkg_price', 'packages_list_items', $index );
-								$repeater_features_key = $this->get_repeater_setting_key( 'pkg_features', 'packages_list_items', $index );
-                                $repeater_button_text_key = $this->get_repeater_setting_key( 'pkg_button_text', 'packages_list_items', $index );
+								$repeater_pkg_name_key = $this->get_repeater_setting_key( 'pkg_name', 'packages_list_items', $index );
+								$repeater_pkg_desc_key = $this->get_repeater_setting_key( 'pkg_description', 'packages_list_items', $index );
+								$repeater_pkg_price_key = $this->get_repeater_setting_key( 'pkg_price', 'packages_list_items', $index );
+								$repeater_pkg_features_key = $this->get_repeater_setting_key( 'pkg_features', 'packages_list_items', $index );
+                                $repeater_pkg_button_text_key = $this->get_repeater_setting_key( 'pkg_button_text', 'packages_list_items', $index );
 							?>
-								<div class="unlock-package-card elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>" data-id="demo-<?php echo esc_attr( $index ); ?>">
+								<div class="unlock-package-card elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>">
 									<?php if ( ! empty( $item['pkg_image']['url'] ) ) : ?>
                                         <div class="unlock-package-image-wrapper">
-										    <img src="<?php echo esc_url( $item['pkg_image']['url'] ); ?>" alt="<?php echo esc_attr( $item['pkg_name'] ); ?>" class="unlock-package-image">
+									    <img src="<?php echo esc_url( $item['pkg_image']['url'] ); ?>" alt="<?php echo esc_attr( $item['pkg_name'] ); ?>" class="unlock-package-image">
                                         </div>
+									<?php else: ?>
+										<div class="unlock-package-image-wrapper"></div> <?php /* Placeholder for no image */ ?>
 									<?php endif; ?>
-                                    <div class="unlock-package-content">
-    								<h4 class="unlock-package-name elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_setting_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_name'] ); ?></h4>
-    								<div class="unlock-package-desc elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_desc_key ); ?>" data-elementor-inline-editing-toolbar="advanced"><?php echo nl2br( $item['pkg_description'] ); ?></div>
-    								<div class="unlock-package-price elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_price_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_price'] ); ?></div>
-    								<?php if ( ! empty( $item['pkg_features'] ) ) : ?>
-    									<ul class="elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_features_key ); ?>" data-elementor-inline-editing-toolbar="advanced">
-    										<?php
-    										$features = explode( "\n", $item['pkg_features'] );
-    										foreach ( $features as $feature ) :
-    											?>
-    											<li><?php echo esc_html( trim( $feature ) ); ?></li>
-    										<?php endforeach; ?>
-    									</ul>
-    								<?php endif; ?>
-                                    </div>
-                                    <div class="unlock-button-wrapper">
-									    <button class="unlock-buy-btn elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_button_text_key ); ?>" data-elementor-inline-editing-toolbar="basic" data-id="demo-<?php echo esc_attr( $index ); ?>"><?php echo esc_html( $item['pkg_button_text'] ); ?></button>
+                                    <div class="unlock-package-content-wrapper">
+    								<h4 class="unlock-package-name elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_pkg_name_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_name'] ); ?></h4>
+    								
+									<?php if ( ! empty( $item['pkg_features'] ) ) : // Using features as meta data ?>
+    									<div class="unlock-package-meta-data elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_pkg_features_key ); ?>" data-elementor-inline-editing-toolbar="advanced">
+											<ul>
+												<?php
+												$features = explode( "\n", $item['pkg_features'] );
+												foreach ( $features as $feature_item ) :
+													if( !empty(trim($feature_item)) ) : ?>
+														<li><?php echo esc_html( trim( $feature_item ) ); ?></li>
+												<?php endif; endforeach; ?>
+											</ul>
+										</div>
+									<?php endif; ?>
+
+									<?php if ( ! empty( $item['pkg_description'] ) ) : ?>
+    									<div class="unlock-package-description elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_pkg_desc_key ); ?>" data-elementor-inline-editing-toolbar="advanced"><?php echo nl2br( $item['pkg_description'] ); ?></div>
+									<?php endif; ?>
+    								
+									<div class="unlock-package-footer">
+										<?php if ( ! empty( $item['pkg_price'] ) ) : ?>
+											<div class="unlock-package-price-wrapper">
+												<span class="unlock-package-price-label"><?php esc_html_e( 'Starting at', 'unlock-elementor-widgets' ); ?></span>
+												<div class="unlock-package-price elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_pkg_price_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_price'] ); ?></div>
+											</div>
+										<?php endif; ?>
+
+										<?php if ( ! empty( $item['pkg_button_text'] ) ) : ?>
+											<div class="unlock-buy-btn-wrapper">
+											    <a href="#" class="unlock-buy-btn elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_pkg_button_text_key ); ?>" data-elementor-inline-editing-toolbar="basic" data-id="<?php echo esc_attr( $item['_id'] ); ?>"><?php echo esc_html( $item['pkg_button_text'] ); ?></a>
+											</div>
+										<?php endif; ?>
+									</div>
                                     </div>
 								</div>
-							<?php endforeach; ?>
+							<?php endforeach; ?> 
 						</div>
-						<style>
-							.unlock-packages-grid {
-								display: flex;
-								flex-wrap: wrap;
-								gap: 2em; /* This will be the gap between cards */
-							}
-							.unlock-package-card {
-                                background-color: #fff;
-								flex: 0 1 calc(50% - 1em); /* Adjust for 2 columns with gap */
-								box-sizing: border-box; /* Include padding and border in the element's total width and height */
-                                display: flex;
-                                flex-direction: column;
-                                /* justify-content: space-between; Removed to allow natural flow */
-                                border-radius: 12px; /* Material 3 like border radius */
-                                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Material 3 like shadow */
-                                transition: box-shadow 0.3s ease-in-out;
-                                overflow: hidden; /* Ensures image corners are also rounded if image is at the very top */
-							}
-                            .unlock-package-card:hover {
-                                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08); /* Enhanced shadow on hover */
-                            }
-                            .unlock-package-image-wrapper {
-                                width: 100%;
-                                height: 200px; /* Fixed height for image container */
-                                overflow: hidden; /* Clip image if it's larger than container */
-                                background-color: #f0f0f0; /* Placeholder background */
-                            }
-                            .unlock-package-image {
-                                width: 100%;
-                                height: 100%;
-                                object-fit: cover; /* Ensures the image covers the area, cropping if necessary */
-                                display: block;
-                            }
-                            .unlock-package-content {
-                                padding: 1.5em;
-                                display: flex;
-                                flex-direction: column;
-                                flex-grow: 1; /* Allows content to take available space */
-                            }
-                            .unlock-package-name {
-                                margin-top: 0;
-                            }
-                            .unlock-button-wrapper {
-                                margin-top: auto; /* Pushes button to the bottom */
-                                padding-top: 1em; /* Add some space above the button */
-                            }
-                            .unlock-buy-btn {
-                                /* Basic button styling, can be expanded */
-                                display: block;
-                                width: 100%;
-                                padding: 0.8em 1em;
-                                text-align: center;
-                                border: none;
-                                border-radius: 8px;
-                                cursor: pointer;
-                                transition: background-color 0.3s ease;
-                            }
-						</style>
 					<?php else : ?>
 						<p><?php esc_html_e( 'No packages configured. Please add packages in the editor.', 'unlock-elementor-widgets' ); ?></p>
 					<?php endif; ?>

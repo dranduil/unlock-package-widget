@@ -371,37 +371,114 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 		$redirect_url_after_login = ! empty( $settings['redirect_url'] ) ? esc_url( $settings['redirect_url'] ) : '';
 		$redirect_url_if_logged_in = ! empty( $settings['redirect_url_if_logged_in'] ) ? esc_url( $settings['redirect_url_if_logged_in'] ) : '';
 
+		// Default English fallbacks if settings are empty
+		$heading_text = ! empty( $settings['heading_text'] ) ? $settings['heading_text'] : 'Sign In';
+		$email_placeholder = ! empty( $settings['email_placeholder'] ) ? $settings['email_placeholder'] : 'Email';
+		$password_placeholder = ! empty( $settings['password_placeholder'] ) ? $settings['password_placeholder'] : 'Password';
+		$button_text = ! empty( $settings['button_text'] ) ? $settings['button_text'] : 'Login';
+
 		?>
+		<style>
+			.unlock-login-wrapper {
+				max-width: 400px;
+				margin: 2em auto;
+				padding: 2em;
+				background-color: #f9f9f9;
+				border-radius: 8px;
+				box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+				text-align: center;
+			}
+			.unlock-login-wrapper .unlock-heading {
+				font-size: 1.8em;
+				margin-bottom: 1em;
+				color: #333;
+			}
+			.unlock-login-wrapper .unlock-form .unlock-input {
+				width: 100%;
+				padding: 0.8em;
+				margin-bottom: 1em;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				box-sizing: border-box;
+				font-size: 1em;
+			}
+			.unlock-login-wrapper .unlock-form .unlock-input:focus {
+				border-color: #0073aa;
+				outline: none;
+				box-shadow: 0 0 0 2px rgba(0,115,170,0.2);
+			}
+			.unlock-login-wrapper .unlock-form .unlock-btn {
+				width: 100%;
+				padding: 0.9em;
+				background-color: #0073aa;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				font-size: 1.1em;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+			}
+			.unlock-login-wrapper .unlock-form .unlock-btn:hover {
+				background-color: #005a87;
+			}
+			.unlock-login-wrapper .unlock-message {
+				margin-top: 1em;
+				padding: 0.75em;
+				border-radius: 4px;
+				font-size: 0.9em;
+			}
+			.unlock-login-wrapper .unlock-message.error {
+				background-color: #f8d7da;
+				color: #721c24;
+				border: 1px solid #f5c6cb;
+			}
+			.unlock-login-wrapper .unlock-message.success {
+				background-color: #d4edda;
+				color: #155724;
+				border: 1px solid #c3e6cb;
+			}
+			/* Responsive adjustments */
+			@media (max-width: 480px) {
+				.unlock-login-wrapper {
+					margin: 1em;
+					padding: 1.5em;
+				}
+				.unlock-login-wrapper .unlock-heading {
+					font-size: 1.5em;
+				}
+			}
+		</style>
 		<div class="unlock-login-wrapper"
 		     <?php if ( $redirect_url_after_login ) : ?>data-redirect-url="<?php echo $redirect_url_after_login; ?>"<?php endif; ?>
 		     <?php if ( $redirect_url_if_logged_in ) : ?>data-redirect-url-if-logged-in="<?php echo $redirect_url_if_logged_in; ?>"<?php endif; ?>>
-			<?php if ( ! empty( $settings['heading_text'] ) ) : ?>
-				<h3 class="unlock-heading"><?php echo esc_html( $settings['heading_text'] ); ?></h3>
-			<?php endif; ?>
+			
+			<h3 class="unlock-heading elementor-inline-editing" data-elementor-setting-key="heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $heading_text ); ?></h3>
 
 			<form id="unlock-login-form" class="unlock-form">
 				<input
 					type="email"
 					id="unlock-login-email"
 					class="unlock-input"
-					placeholder="<?php echo esc_attr( $settings['email_placeholder'] ); ?>"
+					placeholder="<?php echo esc_attr( $email_placeholder ); ?>"
+					aria-label="<?php echo esc_attr( $email_placeholder ); ?>"
 					required
-				><br>
+				>
 
 				<input
 					type="password"
 					id="unlock-login-password"
 					class="unlock-input"
-					placeholder="<?php echo esc_attr( $settings['password_placeholder'] ); ?>"
+					placeholder="<?php echo esc_attr( $password_placeholder ); ?>"
+					aria-label="<?php echo esc_attr( $password_placeholder ); ?>"
 					required
-				><br>
+				>
 
-				<button type="submit" id="unlock-btn-login" class="unlock-btn">
-					<?php echo esc_html( $settings['button_text'] ); ?>
+				<button type="submit" id="unlock-btn-login" class="unlock-btn elementor-inline-editing" data-elementor-setting-key="button_text" data-elementor-inline-editing-toolbar="basic">
+					<?php echo esc_html( $button_text ); ?>
 				</button>
 			</form>
 
-			<div id="unlock-login-message" class="unlock-message" style="margin-top:10px;"></div>
+			<div id="unlock-login-message" class="unlock-message"></div>
 		</div>
 		<?php
 	}
