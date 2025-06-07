@@ -38,8 +38,8 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			[
 				'label' => __( 'Title', 'unlock-elementor-widgets' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'default' => __( 'Packages available', 'unlock-elementor-widgets' ),
-				'placeholder' => __( 'Enter your title', 'unlock-elementor-widgets' ),
+				'default' => __( 'Available Packages', 'unlock-elementor-widgets' ),
+				'placeholder' => __( 'Enter your title here', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -50,7 +50,7 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			[
 				'label' => __( 'Package Name', 'unlock-elementor-widgets' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'default' => __( 'Demo Package', 'unlock-elementor-widgets' ),
+				'default' => __( 'Demo Package Name', 'unlock-elementor-widgets' ),
 				'label_block' => true,
 			]
 		);
@@ -60,7 +60,7 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			[
 				'label' => __( 'Description', 'unlock-elementor-widgets' ),
 				'type' => \Elementor\Controls_Manager::TEXTAREA,
-				'default' => __( 'This is a great demo package.', 'unlock-elementor-widgets' ),
+				'default' => __( 'This is a fantastic demo package with many features.', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -69,7 +69,7 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			[
 				'label' => __( 'Price', 'unlock-elementor-widgets' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'default' => __( 'AED 10', 'unlock-elementor-widgets' ),
+				'default' => __( '$10', 'unlock-elementor-widgets' ),
 			]
 		);
 
@@ -89,8 +89,18 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			[
 				'label' => __( 'Features (one per line)', 'unlock-elementor-widgets' ),
 				'type' => \Elementor\Controls_Manager::TEXTAREA,
-				'default' => __( "Feature A\nFeature B", 'unlock-elementor-widgets' ),
-				'placeholder' => __( "Feature 1\nFeature 2", 'unlock-elementor-widgets' ),
+				'default' => __( "Feature 1\nFeature 2", 'unlock-elementor-widgets' ),
+				'placeholder' => __( "Enter one feature per line", 'unlock-elementor-widgets' ),
+			]
+		);
+
+		$repeater->add_control(
+			'pkg_button_text',
+			[
+				'label' => __( 'Button Text', 'unlock-elementor-widgets' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => __( 'Buy Now', 'unlock-elementor-widgets' ),
+				'label_block' => true,
 			]
 		);
 
@@ -102,18 +112,20 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 				'fields' => $repeater->get_controls(),
 				'default' => [
 					[
-						'pkg_name' => __( 'Demo Package 1', 'unlock-elementor-widgets' ),
-						'pkg_description' => __( 'This is a great demo package.', 'unlock-elementor-widgets' ),
-						'pkg_price' => __( 'AED 10', 'unlock-elementor-widgets' ),
-						'pkg_features' => __( "Feature A\nFeature B", 'unlock-elementor-widgets' ),
+						'pkg_name' => __( 'Standard Package', 'unlock-elementor-widgets' ),
+						'pkg_description' => __( 'Our most popular package, offering a great balance of features and value.', 'unlock-elementor-widgets' ),
+						'pkg_price' => __( '$19.99', 'unlock-elementor-widgets' ),
+						'pkg_features' => __( "Feature Alpha\nFeature Beta\nFeature Gamma", 'unlock-elementor-widgets' ),
 						'pkg_image' => ['url' => 'https://via.placeholder.com/150'],
+                        'pkg_button_text' => __( 'Buy Now', 'unlock-elementor-widgets' ),
 					],
 					[
-						'pkg_name' => __( 'Demo Package 2', 'unlock-elementor-widgets' ),
-						'pkg_description' => __( 'Another excellent demo package.', 'unlock-elementor-widgets' ),
-						'pkg_price' => __( 'AED 20', 'unlock-elementor-widgets' ),
-						'pkg_features' => __( "Feature C\nFeature D\nFeature E", 'unlock-elementor-widgets' ),
+						'pkg_name' => __( 'Premium Package', 'unlock-elementor-widgets' ),
+						'pkg_description' => __( 'The ultimate package for users who need all the bells and whistles.', 'unlock-elementor-widgets' ),
+						'pkg_price' => __( '$39.99', 'unlock-elementor-widgets' ),
+						'pkg_features' => __( "All Standard Features\nPriority Support\nExclusive Content Access", 'unlock-elementor-widgets' ),
 						'pkg_image' => ['url' => 'https://via.placeholder.com/150'],
+                        'pkg_button_text' => __( 'Get Premium', 'unlock-elementor-widgets' ),
 					],
 				],
 				'title_field' => '{{{ pkg_name }}}',
@@ -612,7 +624,44 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 		);
 
 		$this->end_controls_tab();
-		$this->end_controls_tabs();
+		$this->end_controls_tabs(); // End button_tabs
+
+        $this->add_responsive_control(
+            'button_alignment_list',
+            [
+                'label' => __( 'Button Alignment', 'unlock-elementor-widgets' ),
+                'type' => \Elementor\Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => __( 'Left', 'unlock-elementor-widgets' ),
+                        'icon' => 'eicon-h-align-left',
+                    ],
+                    'center' => [
+                        'title' => __( 'Center', 'unlock-elementor-widgets' ),
+                        'icon' => 'eicon-h-align-center',
+                    ],
+                    'right' => [
+                        'title' => __( 'Right', 'unlock-elementor-widgets' ),
+                        'icon' => 'eicon-h-align-right',
+                    ],
+					'justify' => [
+						'title' => __( 'Full Width', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-h-align-stretch',
+					]
+                ],
+                'default' => 'left',
+                'selectors_dictionary' => [
+                    'left' => 'flex-start',
+                    'center' => 'center',
+                    'right' => 'flex-end',
+					'justify' => 'stretch',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .unlock-package-card .unlock-button-wrapper' => 'align-self: {{VALUE}}; width: {{VALUE}} == "stretch" ? "100%" : "auto";',
+                    '{{WRAPPER}} .unlock-package-card .unlock-buy-btn' => 'width: {{VALUE}} == "stretch" ? "100%" : "auto";',
+                ],
+            ]
+        );
 
 		$this->end_controls_section(); // End Style Tab
 	}
@@ -631,6 +680,7 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 								$repeater_desc_key = $this->get_repeater_setting_key( 'pkg_description', 'packages_list_items', $index );
 								$repeater_price_key = $this->get_repeater_setting_key( 'pkg_price', 'packages_list_items', $index );
 								$repeater_features_key = $this->get_repeater_setting_key( 'pkg_features', 'packages_list_items', $index );
+                                $repeater_button_text_key = $this->get_repeater_setting_key( 'pkg_button_text', 'packages_list_items', $index );
 							?>
 								<div class="unlock-package-card elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>" data-id="demo-<?php echo esc_attr( $index ); ?>">
 									<?php if ( ! empty( $item['pkg_image']['url'] ) ) : ?>
@@ -649,7 +699,9 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 											<?php endforeach; ?>
 										</ul>
 									<?php endif; ?>
-									<button class="unlock-buy-btn" data-id="demo-<?php echo esc_attr( $index ); ?>">Acquista</button>
+                                    <div class="unlock-button-wrapper">
+									    <button class="unlock-buy-btn elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_button_text_key ); ?>" data-elementor-inline-editing-toolbar="basic" data-id="demo-<?php echo esc_attr( $index ); ?>"><?php echo esc_html( $item['pkg_button_text'] ); ?></button>
+                                    </div>
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -660,9 +712,21 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 								gap: 20px;
 							}
 							.unlock-package-card {
-								flex: 1 1 300px;
-								/* Add other card styling here if needed, or use Elementor controls */
+								flex: 0 1 calc(50% - 1em); /* Adjust for 2 columns with gap */
+								box-sizing: border-box; /* Include padding and border in the element's total width and height */
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                                height: 100%;
 							}
+                            .unlock-packages-grid {
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 2em; /* This will be the gap between cards */
+                            }
+                            .unlock-button-wrapper {
+                                margin-top: auto; /* Pushes button to the bottom if content above varies */
+                            }
 						</style>
 					<?php else : ?>
 						<p><?php esc_html_e( 'No packages configured. Please add packages in the editor.', 'unlock-elementor-widgets' ); ?></p>
