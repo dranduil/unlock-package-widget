@@ -729,7 +729,45 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
         <div class="unlock-profile-wrapper"
              <?php if ( $redirect_url ) : ?>data-redirect-url="<?php echo $redirect_url; ?>"<?php endif; ?>>
             <div id="unlock-profile-content">
-                <p><?php esc_html_e( 'Loading profile…', 'unlock-elementor-widgets' ); ?></p>
+                <?php if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) : ?>
+                    <?php
+                    // Demo data for Elementor editor
+                    $demo_data = [
+                        'avatar'       => 'https://via.placeholder.com/150',
+                        'fullname'     => 'John Doe',
+                        'email'        => 'john.doe@example.com',
+                        'phone'        => '+1234567890',
+                        'jobtitle'     => 'Web Developer',
+                        'location'     => 'New York, USA',
+                        'company'      => 'Unlock Inc.',
+                        'joindate'     => '2023-01-15',
+                        'roles'        => 'Subscriber, Editor',
+                        'biography'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                        'link'         => 'https://example.com',
+                        'subscription' => 'Premium Plan (Renews on 2024-12-31)',
+                        'payment'      => 'Visa **** **** **** 1234',
+                        'nationality'  => 'American',
+                        'gender'       => 'Male',
+                        'credits'      => '100 Credits',
+                    ];
+                    ?>
+                    <div class="unlock-profile-sections">
+                        <?php foreach ( $show as $key => $is_visible ) : ?>
+                            <?php if ( $is_visible && isset( $demo_data[ $key ] ) ) : ?>
+                                <div class="unlock-profile-section unlock-profile-section-<?php echo esc_attr( $key ); ?>">
+                                    <?php if ( $key === 'avatar' && $settings['show_avatar'] === 'yes' ) : ?>
+                                        <img src="<?php echo esc_url( $demo_data['avatar'] ); ?>" alt="<?php esc_attr_e( 'User Avatar', 'unlock-elementor-widgets' ); ?>" class="unlock-profile-avatar" style="width: <?php echo intval( $settings['avatar_size']['size'] ); ?>px; height: auto; border-radius: <?php echo esc_attr( $settings['avatar_border_radius']['top'] . $settings['avatar_border_radius']['unit'] ); ?>;">
+                                    <?php else : ?>
+                                        <h4 class="unlock-profile-field-label"><?php echo esc_html( $settings[ "label_{$key}" ] ); ?></h4>
+                                        <p class="unlock-profile-field-value"><?php echo esc_html( $demo_data[ $key ] ); ?></p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <p><?php esc_html_e( 'Loading profile…', 'unlock-elementor-widgets' ); ?></p>
+                <?php endif; ?>
             </div>
 
             <!-- Passiamo in data-* quali sezioni mostrare e quali etichette usare -->
