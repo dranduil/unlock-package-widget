@@ -491,32 +491,45 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			<div id="unlock-packages-list">
 				<?php if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) : ?>
 					<?php if ( ! empty( $settings['packages_list_items'] ) ) : ?>
-						<?php foreach ( $settings['packages_list_items'] as $index => $item ) : 
-							$repeater_setting_key = $this->get_repeater_setting_key( 'pkg_name', 'packages_list_items', $index );
-							$repeater_desc_key = $this->get_repeater_setting_key( 'pkg_description', 'packages_list_items', $index );
-							$repeater_price_key = $this->get_repeater_setting_key( 'pkg_price', 'packages_list_items', $index );
-							$repeater_features_key = $this->get_repeater_setting_key( 'pkg_features', 'packages_list_items', $index );
-						?>
-							<div class="unlock-package-card elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>" data-id="demo-<?php echo esc_attr( $index ); ?>">
-								<?php if ( ! empty( $item['pkg_image']['url'] ) ) : ?>
-									<img src="<?php echo esc_url( $item['pkg_image']['url'] ); ?>" alt="<?php echo esc_attr( $item['pkg_name'] ); ?>" class="unlock-package-image" style="width:100%;max-width:150px;height:auto;margin-bottom:10px;">
-								<?php endif; ?>
-								<h4 class="unlock-package-name elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_setting_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_name'] ); ?></h4>
-								<div class="unlock-package-desc elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_desc_key ); ?>" data-elementor-inline-editing-toolbar="advanced"><?php echo nl2br( $item['pkg_description'] ); ?></div>
-								<div class="unlock-package-price elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_price_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_price'] ); ?></div>
-								<?php if ( ! empty( $item['pkg_features'] ) ) : ?>
-									<ul class="elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_features_key ); ?>" data-elementor-inline-editing-toolbar="advanced">
-										<?php
-										$features = explode( "\n", $item['pkg_features'] );
-										foreach ( $features as $feature ) :
-											?>
-											<li><?php echo esc_html( trim( $feature ) ); ?></li>
-										<?php endforeach; ?>
-									</ul>
-								<?php endif; ?>
-								<button class="unlock-buy-btn" data-id="demo-<?php echo esc_attr( $index ); ?>">Acquista</button>
-							</div>
-						<?php endforeach; ?>
+						<div class="unlock-packages-grid">
+							<?php foreach ( $settings['packages_list_items'] as $index => $item ) : 
+								$repeater_setting_key = $this->get_repeater_setting_key( 'pkg_name', 'packages_list_items', $index );
+								$repeater_desc_key = $this->get_repeater_setting_key( 'pkg_description', 'packages_list_items', $index );
+								$repeater_price_key = $this->get_repeater_setting_key( 'pkg_price', 'packages_list_items', $index );
+								$repeater_features_key = $this->get_repeater_setting_key( 'pkg_features', 'packages_list_items', $index );
+							?>
+								<div class="unlock-package-card elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>" data-id="demo-<?php echo esc_attr( $index ); ?>">
+									<?php if ( ! empty( $item['pkg_image']['url'] ) ) : ?>
+										<img src="<?php echo esc_url( $item['pkg_image']['url'] ); ?>" alt="<?php echo esc_attr( $item['pkg_name'] ); ?>" class="unlock-package-image" style="width:100%;max-width:150px;height:auto;margin-bottom:10px;">
+									<?php endif; ?>
+									<h4 class="unlock-package-name elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_setting_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_name'] ); ?></h4>
+									<div class="unlock-package-desc elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_desc_key ); ?>" data-elementor-inline-editing-toolbar="advanced"><?php echo nl2br( $item['pkg_description'] ); ?></div>
+									<div class="unlock-package-price elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_price_key ); ?>" data-elementor-inline-editing-toolbar="basic"><?php echo esc_html( $item['pkg_price'] ); ?></div>
+									<?php if ( ! empty( $item['pkg_features'] ) ) : ?>
+										<ul class="elementor-inline-editing" data-elementor-setting-key="<?php echo esc_attr( $repeater_features_key ); ?>" data-elementor-inline-editing-toolbar="advanced">
+											<?php
+											$features = explode( "\n", $item['pkg_features'] );
+											foreach ( $features as $feature ) :
+												?>
+												<li><?php echo esc_html( trim( $feature ) ); ?></li>
+											<?php endforeach; ?>
+										</ul>
+									<?php endif; ?>
+									<button class="unlock-buy-btn" data-id="demo-<?php echo esc_attr( $index ); ?>">Acquista</button>
+								</div>
+							<?php endforeach; ?>
+						</div>
+						<style>
+							.unlock-packages-grid {
+								display: flex;
+								flex-wrap: wrap;
+								gap: 20px;
+							}
+							.unlock-package-card {
+								flex: 1 1 300px;
+								/* Add other card styling here if needed, or use Elementor controls */
+							}
+						</style>
 					<?php else : ?>
 						<p><?php esc_html_e( 'No packages configured. Please add packages in the editor.', 'unlock-elementor-widgets' ); ?></p>
 					<?php endif; ?>
