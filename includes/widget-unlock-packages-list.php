@@ -696,7 +696,8 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			}
 			.unlock-package-image-wrapper {
 				width: 100%;
-				height: 160px; /* Adjusted height for image */
+				/* height: 160px; Removed fixed height */
+				aspect-ratio: 1 / 1; /* Maintain a 1x1 aspect ratio (square) */
 				overflow: hidden;
 				background-color: #f8f9fa; /* Light placeholder background */
 			}

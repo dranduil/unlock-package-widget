@@ -43,8 +43,8 @@ function doLogin(e) {
             setToken(data.token);
             if (msgDiv) msgDiv.innerText = "Login avvenuto con successo.";
 
-            // Redirect se configurato
-            if (redirectUrl) {
+            // Redirect se configurato e non vuoto
+            if (redirectUrl && redirectUrl.trim() !== '') {
                 window.location.href = redirectUrl;
                 return;
             }
@@ -106,8 +106,8 @@ function doSignup(e) {
             setToken(data.token);
             if (msgDiv) msgDiv.innerText = "Registrazione avvenuta con successo.";
 
-            // Redirect se configurato
-            if (redirectUrl) {
+            // Redirect se configurato e non vuoto
+            if (redirectUrl && redirectUrl.trim() !== '') {
                 window.location.href = redirectUrl;
                 return;
             }
@@ -429,7 +429,7 @@ function setupUnlockWidgets() {
     const loginWrapper = document.querySelector(".unlock-login-wrapper");
     if (loginWrapper && token) {
         const redirectUrlIfLoggedIn = loginWrapper.dataset.redirectUrlIfLoggedIn || "/"; // Default to '/' if not set
-        if (redirectUrlIfLoggedIn) {
+        if (redirectUrlIfLoggedIn && redirectUrlIfLoggedIn.trim() !== '') {
             window.location.href = redirectUrlIfLoggedIn;
             return; // Stop further processing if redirected
         }
@@ -442,7 +442,7 @@ function setupUnlockWidgets() {
     const signupWrapper = document.querySelector(".unlock-signup-wrapper");
     if (signupWrapper && token) {
         const redirectUrlIfLoggedIn = signupWrapper.dataset.redirectUrlIfLoggedIn || "/"; // Default to '/' if not set
-        if (redirectUrlIfLoggedIn) {
+        if (redirectUrlIfLoggedIn && redirectUrlIfLoggedIn.trim() !== '') {
             window.location.href = redirectUrlIfLoggedIn;
             return; // Stop further processing if redirected
         }
