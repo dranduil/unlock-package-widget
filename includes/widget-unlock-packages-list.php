@@ -163,6 +163,32 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			]
 		);
 
+		$this->add_responsive_control(
+			'title_alignment',
+			[
+				'label' => __( 'Title Alignment', 'unlock-elementor-widgets' ),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'left',
+				'selectors' => [
+					'{{WRAPPER}} .unlock-heading' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
 		$this->add_control(
 			'card_style_heading',
 			[
@@ -254,6 +280,32 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			]
 		);
 
+		$this->add_responsive_control(
+			'pkg_name_alignment',
+			[
+				'label' => __( 'Alignment', 'unlock-elementor-widgets' ),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'left',
+				'selectors' => [
+					'{{WRAPPER}} .unlock-package-name' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
 		// Package Description Styling
 		$this->add_control(
 			'pkg_desc_style_heading',
@@ -280,6 +332,36 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .unlock-package-desc' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'pkg_desc_alignment',
+			[
+				'label' => __( 'Alignment', 'unlock-elementor-widgets' ),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-right',
+					],
+					'justify' => [
+						'title' => __( 'Justify', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-justify',
+					],
+				],
+				'default' => 'left',
+				'selectors' => [
+					'{{WRAPPER}} .unlock-package-desc' => 'text-align: {{VALUE}};',
 				],
 			]
 		);
@@ -314,6 +396,32 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 			]
 		);
 
+		$this->add_responsive_control(
+			'pkg_price_alignment',
+			[
+				'label' => __( 'Alignment', 'unlock-elementor-widgets' ),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'left',
+				'selectors' => [
+					'{{WRAPPER}} .unlock-package-price' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
 		// Package Features Styling
 		$this->add_control(
 			'pkg_features_style_heading',
@@ -340,6 +448,32 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .unlock-package-card ul li' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'pkg_features_alignment',
+			[
+				'label' => __( 'List Alignment', 'unlock-elementor-widgets' ),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'unlock-elementor-widgets' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'left',
+				'selectors' => [
+					'{{WRAPPER}} .unlock-package-card ul' => 'text-align: {{VALUE}}; list-style-position: inside;', // Added list-style-position for better alignment
 				],
 			]
 		);
