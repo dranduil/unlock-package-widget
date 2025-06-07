@@ -146,17 +146,20 @@ function loadPackagesList() {
             : { "Accept": "application/json" }
     })
     .then(res => res.json())
-    .then(data => {
+    .then(response => {
         container.innerHTML = "";
-        if (Array.isArray(data) && data.length) {
-            data.forEach(pkg => {
+        const packages = response.data; // Access the nested array
+        if (Array.isArray(packages) && packages.length) {
+            packages.forEach(pkg => {
                 const card = document.createElement("div");
                 card.classList.add("unlock-package-card");
                 card.setAttribute("data-id", pkg.id);
+                const imageUrl = pkg.image_url && pkg.image_url.trim() !== '' ? pkg.image_url : 'https://via.placeholder.com/150';
 
                 card.innerHTML = `
+                    <img src="${imageUrl}" alt="${pkg.name}" class="unlock-package-image" style="width:100%;max-width:150px;height:auto;margin-bottom:10px;">
                     <h4 class="unlock-package-name">${pkg.name}</h4>
-                    <p class="unlock-package-desc">${pkg.description}</p>
+                    <p class="unlock-package-desc">${pkg.description || ''}</p>
                     <p class="unlock-package-price">${pkg.price}</p>
                     <ul>
                         ${pkg.features.map(f => `<li>${f}</li>`).join("")}
@@ -189,10 +192,13 @@ function loadSinglePackage(pkgId) {
             : { "Accept": "application/json" }
     })
     .then(res => res.json())
-    .then(pkg => {
+    .then(response => {
+        const pkg = response.data || response; // Handle potential nesting for single package
+        const imageUrl = pkg.image_url && pkg.image_url.trim() !== '' ? pkg.image_url : 'https://via.placeholder.com/150';
         container.innerHTML = `
+            <img src="${imageUrl}" alt="${pkg.name}" class="unlock-package-image" style="width:100%;max-width:150px;height:auto;margin-bottom:10px;">
             <h4 class="unlock-package-name">${pkg.name}</h4>
-            <p class="unlock-package-desc">${pkg.description}</p>
+            <p class="unlock-package-desc">${pkg.description || ''}</p>
             <p class="unlock-package-price">${pkg.price}</p>
             <ul>
                 ${pkg.features.map(f => `<li>${f}</li>`).join("")}
