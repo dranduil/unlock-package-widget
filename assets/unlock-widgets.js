@@ -308,10 +308,7 @@ function loadUserProfile() {
         console.log('API Response Data:', data); // DEBUG: Log API response
         let html = "";
 
-        const settingsElement = document.querySelector('.unlock-profile-settings');
-        const settingsJson = settingsElement ? settingsElement.dataset.settings : '{}';
-        const settings = JSON.parse(settingsJson);
-        console.log('Parsed Settings:', settings); // DEBUG: Log parsed settings
+        // The 'settings' variable parsed before the API call is already in scope and will be used here.
 
         // Helper function to generate a field item
         const createField = (label, value, labelKey, valueKey, sectionKey, showFlag) => {
