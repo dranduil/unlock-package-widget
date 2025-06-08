@@ -428,6 +428,7 @@ function loadUserProfile() {
 /** ─── SETUP EVENT LISTENERS ─────────────────────────────────────────────────┐ **/
 function setupUnlockWidgets() {
     const token = getToken();
+    console.log('setupUnlockWidgets function called'); // DEBUG: Log function call
 
     // ───── REDIRECT SE GIÁ LOGGATO SULLA PAGINA DI LOGIN ─────
     const loginWrapper = document.querySelector(".unlock-login-wrapper");
