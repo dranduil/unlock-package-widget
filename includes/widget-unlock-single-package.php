@@ -509,7 +509,7 @@ class Unlock_Widget_Single_Package extends \Elementor\Widget_Base {
 								<?php endforeach; ?>
 							</ul>
 						<?php endif; ?>
-						<button class="unlock-buy-btn" data-id="<?php echo esc_attr( $editor_pkg_id ); ?>">Acquista</button>
+						<button class="unlock-buy-btn" data-id="<?php echo esc_attr( $editor_pkg_id ); ?>">Buy</button>
 					</div>
 				<?php else : ?>
 					<p><?php esc_html_e( 'Caricamento dettagli…', 'unlock-elementor-widgets' ); ?></p>

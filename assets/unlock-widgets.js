@@ -202,7 +202,7 @@ function loadPackagesList() {
                 const priceEl = document.createElement("p");
                 priceEl.classList.add("unlock-package-price");
                 // Assuming pkg.price is just the number, and currency is handled elsewhere or can be added
-                priceEl.innerHTML = `${pkg.price} <span class="unlock-package-currency">EUR</span>`; // Example currency
+                priceEl.innerHTML = pkg.price; // Example currency
                 contentContainer.appendChild(priceEl);
 
                 // Optional: Features list - uncomment and style if needed
@@ -223,7 +223,7 @@ function loadPackagesList() {
                 buyButton.classList.add("unlock-package-details-link"); // Re-using class from single for consistency or create new
                 buyButton.href = "#"; // Or link to a details page / purchase action
                 buyButton.setAttribute("data-id", pkg.id);
-                buyButton.textContent = "Acquista"; // Or "Details"
+                buyButton.textContent = "Buy"; // Or "Details"
                 buyButton.addEventListener('click', (e) => {
                     e.preventDefault();
                     doPurchase(pkg.id);
@@ -312,7 +312,7 @@ function loadSinglePackage(pkgId) {
         const purchaseButton = document.createElement("button");
         purchaseButton.classList.add("unlock-package-purchase-button"); // Use the new M3 style button class
         purchaseButton.setAttribute("data-id", pkg.id);
-        purchaseButton.textContent = "Acquista Ora";
+        purchaseButton.textContent = "Buy Now";
         purchaseButton.addEventListener('click', (e) => {
             e.preventDefault();
             doPurchase(pkg.id, container); // Pass container for messages
@@ -335,7 +335,7 @@ function loadSinglePackage(pkgId) {
     });
 }
 
-/** ─── ACQUISTA PACCHETTO ─────────────────────────────────── **/
+/** ─── Purchase Package ─────────────────────────────────── **/
 function doPurchase(pkgId, messageContainerElement) {
     // if messageContainerElement is not provided, try to find a generic one or default to alert
     let msgDisplay = messageContainerElement;
@@ -401,7 +401,7 @@ function doPurchase(pkgId, messageContainerElement) {
     })
     .then(data => {
         // Assuming the API returns a success message or specific data upon successful purchase
-        const successMessage = data?.message || "Pacchetto acquistato con successo!";
+        const successMessage = data?.message || "Package purchased successfully!";
         showMessage(successMessage, false);
         // Optionally, reload user profile or packages if purchase affects them
         // loadUserProfile(); 
@@ -670,7 +670,7 @@ function setupUnlockWidgets() {
         }
     });
 
-    // ───── ACQUISTA PACCHETTO ───────────────────────────────────
+    // ───── Purchase package ───────────────────────────────────
     document.addEventListener("click", function(e) {
         if (e.target.matches(".unlock-buy-btn")) {
             const pkgId = e.target.getAttribute("data-id");
