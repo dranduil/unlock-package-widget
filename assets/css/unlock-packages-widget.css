@@ -1,0 +1,259 @@
+/* General Styling for Packages List and Single Package Widgets */
+.unlock-packages-widget,
+.unlock-single-package-widget {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #333;
+    margin: 20px auto;
+    padding: 0; /* Reset padding if container handles it */
+}
+
+.unlock-packages-widget *,
+.unlock-single-package-widget * {
+    box-sizing: border-box;
+}
+
+/* Packages List Specific Styling - Material 3 Card Grid */
+.unlock-packages-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust minmax for desired card size */
+    gap: 24px; /* Material 3 recommends 24px or 16px gaps */
+}
+
+.unlock-package-item {
+    background-color: #fffbff; /* Material 3 Surface color */
+    border-radius: 12px; /* Material 3 Medium corner radius */
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15); /* Elevation 1 */
+    overflow: hidden; /* To ensure image respects border radius */
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1); /* Material 3 motion */
+}
+
+.unlock-package-item:hover {
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3), 0px 4px 8px 3px rgba(0, 0, 0, 0.15); /* Elevation 2 on hover */
+}
+
+.unlock-package-image-container {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Square aspect ratio */
+    background-color: #e0e0e0; /* Placeholder background */
+    overflow: hidden; /* Ensure image fits */
+}
+
+.unlock-package-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the area, cropping if necessary */
+}
+
+.unlock-package-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.unlock-package-name {
+    font-size: 1.25rem; /* Material 3 Title Medium */
+    font-weight: 500;
+    color: #1d1b20; /* Material 3 On Surface */
+    margin: 0 0 8px 0;
+    line-height: 1.6rem;
+}
+
+.unlock-package-description {
+    font-size: 0.875rem; /* Material 3 Body Medium */
+    color: #49454f; /* Material 3 On Surface Variant */
+    margin-bottom: 12px;
+    flex-grow: 1;
+    line-height: 1.25rem;
+}
+
+.unlock-package-price {
+    font-size: 1rem; /* Material 3 Label Large */
+    font-weight: 500;
+    color: #6750a4; /* Material 3 Primary */
+    margin-bottom: 16px;
+}
+
+.unlock-package-price .unlock-package-currency {
+    font-size: 0.8em;
+    font-weight: normal;
+}
+
+.unlock-package-details-link {
+    display: inline-block;
+    background-color: #6750a4; /* Material 3 Primary */
+    color: #ffffff; /* Material 3 On Primary */
+    padding: 10px 24px;
+    border: none;
+    border-radius: 20px; /* Full pill shape for Material 3 button */
+    text-decoration: none;
+    font-size: 0.875rem; /* Material 3 Label Large */
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    margin-top: auto; /* Pushes button to the bottom */
+    letter-spacing: 0.1px;
+    line-height: 1.25rem;
+    text-transform: none; /* Or 'uppercase' if preferred */
+}
+
+.unlock-package-details-link:hover {
+    background-color: #543e8e; /* Darker shade for hover */
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15); /* Elevation 1 on hover for button */
+}
+
+.unlock-package-details-link:hover {
+    background-color: #005a87;
+}
+
+/* Single Package Specific Styling */
+.unlock-single-package-details {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px;
+    max-width: 700px;
+    margin: 20px auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.unlock-single-package-name {
+    font-size: 2em;
+    font-weight: 600;
+    color: #111;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.unlock-single-package-description {
+    font-size: 1.1em;
+    color: #444;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.unlock-single-package-price {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #0073aa;
+    margin-bottom: 20px;
+}
+
+.unlock-single-package-price .unlock-package-currency {
+    font-size: 0.7em;
+    font-weight: normal;
+}
+
+.unlock-single-package-features-title {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #222;
+    margin: 20px 0 10px 0;
+}
+
+.unlock-single-package-features-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.unlock-single-package-features-list li {
+    font-size: 1em;
+    color: #555;
+    padding: 8px 0;
+    border-bottom: 1px dotted #eee;
+}
+
+.unlock-single-package-features-list li:last-child {
+    border-bottom: none;
+}
+
+.unlock-single-package-features-list li::before {
+    content: "\2713"; /* Checkmark */
+    color: #28a745; /* Green */
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.unlock-package-purchase-button {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.unlock-package-purchase-button:hover {
+    background-color: #218838;
+}
+
+/* Loading and Error States */
+.unlock-loading-message,
+.unlock-error-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1em;
+    color: #555;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.unlock-error-message {
+    color: #d9534f;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .unlock-packages-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .unlock-package-item {
+        padding: 15px;
+    }
+
+    .unlock-package-name {
+        font-size: 1.3em;
+    }
+
+    .unlock-single-package-name {
+        font-size: 1.7em;
+    }
+
+    .unlock-single-package-description {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .unlock-packages-list {
+        grid-template-columns: 1fr; /* Single column on very small screens */
+    }
+
+    .unlock-single-package-details {
+        padding: 20px;
+    }
+
+    .unlock-single-package-name {
+        font-size: 1.5em;
+    }
+
+    .unlock-package-price,
+    .unlock-single-package-price {
+        font-size: 1.2em;
+    }
+}

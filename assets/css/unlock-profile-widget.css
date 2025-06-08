@@ -1,0 +1,154 @@
+.unlock-profile-widget {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.unlock-profile-widget * {
+    box-sizing: border-box;
+}
+
+.unlock-profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.unlock-profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.unlock-profile-name {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+}
+
+.unlock-profile-username {
+    font-size: 1em;
+    color: #555;
+    margin: 0;
+}
+
+.unlock-profile-section {
+    margin-bottom: 20px;
+}
+
+.unlock-profile-section-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #eee;
+}
+
+.unlock-profile-field {
+    display: flex;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.unlock-profile-label {
+    font-weight: 600;
+    color: #444;
+    width: 150px; /* Adjust as needed */
+    flex-shrink: 0;
+}
+
+.unlock-profile-value {
+    color: #666;
+    word-break: break-word;
+}
+
+.unlock-profile-value a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.unlock-profile-value a:hover {
+    text-decoration: underline;
+}
+
+.unlock-profile-no-data {
+    color: #777;
+    font-style: italic;
+}
+
+.unlock-profile-logout-button {
+    display: inline-block;
+    background-color: #d9534f;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 10px;
+}
+
+.unlock-profile-logout-button:hover {
+    background-color: #c9302c;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .unlock-profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .unlock-profile-avatar {
+        margin-bottom: 15px;
+    }
+
+    .unlock-profile-name {
+        font-size: 1.6em;
+    }
+}
+
+@media (max-width: 480px) {
+    .unlock-profile-widget {
+        padding: 15px;
+    }
+
+    .unlock-profile-field {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .unlock-profile-label {
+        width: auto;
+        margin-bottom: 5px;
+        font-size: 0.9em;
+    }
+
+    .unlock-profile-value {
+        font-size: 0.9em;
+    }
+
+    .unlock-profile-name {
+        font-size: 1.4em;
+    }
+
+    .unlock-profile-section-title {
+        font-size: 1.1em;
+    }
+}

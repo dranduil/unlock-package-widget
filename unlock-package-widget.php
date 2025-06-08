@@ -25,6 +25,19 @@ add_action( 'wp_enqueue_scripts', function() {
 
 	// Se prevedi CSS custom, potresti aggiungere qui un enqueue_style
 	// wp_enqueue_style( 'unlock-widgets-css', plugins_url('assets/unlock-widgets.css', __FILE__) );
+	wp_enqueue_style(
+		'unlock-profile-widget-css',
+		plugins_url( 'assets/css/unlock-profile-widget.css', __FILE__ ),
+		[],
+		null
+	);
+
+	wp_enqueue_style(
+		'unlock-packages-widget-css',
+		plugins_url( 'assets/css/unlock-packages-widget.css', __FILE__ ),
+		[],
+		null
+	);
 } );
 
 /**
