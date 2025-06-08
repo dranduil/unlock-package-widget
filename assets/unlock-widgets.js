@@ -259,17 +259,76 @@ function loadSinglePackage(pkgId) {
     .then(res => res.json())
     .then(response => {
         const pkg = response.data || response; // Handle potential nesting for single package
-        const imageUrl = pkg.image_url && pkg.image_url.trim() !== '' ? pkg.image_url : 'https://via.placeholder.com/150';
-        container.innerHTML = `
-            <img src="${imageUrl}" alt="${pkg.name}" class="unlock-package-image" style="width:100%;max-width:150px;height:auto;margin-bottom:10px;">
-            <h4 class="unlock-package-name">${pkg.name}</h4>
-            <p class="unlock-package-desc">${pkg.description || ''}</p>
-            <p class="unlock-package-price">${pkg.price}</p>
-            <ul>
-                ${pkg.features.map(f => `<li>${f}</li>`).join("")}
-            </ul>
-            <button class="unlock-buy-btn" data-id="${pkg.id}">Acquista</button>
-        `;
+        const pkg = response.data || response; // Handle potential nesting for single package
+        container.innerHTML = ''; // Clear loading message
+
+        const item = document.createElement('div');
+        item.classList.add('unlock-single-package-details'); // Use a specific class for single view if needed or reuse general item class
+
+        const imageUrl = pkg.image_url && pkg.image_url.trim() !== '' ? pkg.image_url : 'https://via.placeholder.com/300x300.png?text=Package+Image';
+
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('unlock-package-image-container'); // Re-use class from list for consistency
+        const imageEl = document.createElement('img');
+        imageEl.classList.add('unlock-package-image');
+        imageEl.src = imageUrl;
+        imageEl.alt = pkg.name || 'Package image';
+        imageContainer.appendChild(imageEl);
+        item.appendChild(imageContainer);
+
+        const contentContainer = document.createElement('div');
+        contentContainer.classList.add('unlock-package-content'); // Re-use class from list for consistency
+
+        const nameEl = document.createElement("h4");
+        nameEl.classList.add("unlock-single-package-name"); // Specific class for single view title
+        nameEl.textContent = pkg.name;
+        contentContainer.appendChild(nameEl);
+
+        const descEl = document.createElement("p");
+        descEl.classList.add("unlock-single-package-description"); // Specific class for single view description
+        descEl.textContent = pkg.description || '';
+        contentContainer.appendChild(descEl);
+
+        const priceEl = document.createElement("p");
+        priceEl.classList.add("unlock-single-package-price"); // Specific class for single view price
+        priceEl.innerHTML = `${pkg.price} <span class="unlock-package-currency">EUR</span>`;
+        contentContainer.appendChild(priceEl);
+
+        if (pkg.features && Array.isArray(pkg.features) && pkg.features.length > 0) {
+            const featuresTitle = document.createElement('h5');
+            featuresTitle.classList.add('unlock-single-package-features-title');
+            featuresTitle.textContent = 'Features:'; // Or make this configurable
+            contentContainer.appendChild(featuresTitle);
+
+            const featuresList = document.createElement('ul');
+            featuresList.classList.add('unlock-single-package-features-list');
+            pkg.features.forEach(f => {
+                const featureItem = document.createElement('li');
+                featureItem.textContent = f;
+                featuresList.appendChild(featureItem);
+            });
+            contentContainer.appendChild(featuresList);
+        }
+
+        const purchaseButton = document.createElement("button");
+        purchaseButton.classList.add("unlock-package-purchase-button"); // Use the new M3 style button class
+        purchaseButton.setAttribute("data-id", pkg.id);
+        purchaseButton.textContent = "Acquista Ora";
+        purchaseButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            doPurchase(pkg.id, container); // Pass container for messages
+        });
+        contentContainer.appendChild(purchaseButton);
+        
+        // Message area for purchase feedback
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('unlock-purchase-message');
+        messageDiv.style.marginTop = '15px';
+        contentContainer.appendChild(messageDiv);
+
+        item.appendChild(contentContainer);
+        container.appendChild(item);
+
     })
     .catch(err => {
         console.error(err);
@@ -278,7 +337,44 @@ function loadSinglePackage(pkgId) {
 }
 
 /** ─── ACQUISTA PACCHETTO ─────────────────────────────────── **/
-function doPurchase(pkgId) {
+function doPurchase(pkgId, messageContainerElement) {
+    // if messageContainerElement is not provided, try to find a generic one or default to alert
+    let msgDisplay = messageContainerElement;
+    if (!msgDisplay) {
+        // Attempt to find a general message display area if one exists for the list view
+        // This part might need a more robust selector if multiple widgets are on the page
+        const listContainer = document.querySelector("#unlock-packages-list");
+        if (listContainer) {
+            msgDisplay = listContainer.querySelector(`.unlock-package-item[data-id="${pkgId}"] .unlock-purchase-message`);
+            if (!msgDisplay) { // if not found within item, maybe a general message area for the list
+                 msgDisplay = listContainer.querySelector('.unlock-list-purchase-message');
+                 if(!msgDisplay){
+                    const tempMsgDiv = document.createElement('div');
+                    tempMsgDiv.classList.add('unlock-list-purchase-message');
+                    listContainer.prepend(tempMsgDiv); // Add to top of list
+                    msgDisplay = tempMsgDiv;
+                 }
+            }
+        }
+    }
+
+    const showMessage = (message, isError = false) => {
+        if (msgDisplay && msgDisplay instanceof HTMLElement) {
+            msgDisplay.textContent = message;
+            msgDisplay.className = 'unlock-purchase-message'; // Reset classes
+            msgDisplay.classList.add(isError ? 'error' : 'success');
+            // Simple styling for visibility, ideally handled by CSS
+            msgDisplay.style.padding = '10px';
+            msgDisplay.style.marginTop = '10px';
+            msgDisplay.style.borderRadius = '4px';
+            msgDisplay.style.border = '1px solid';
+            msgDisplay.style.borderColor = isError ? '#d9534f' : '#28a745';
+            msgDisplay.style.color = isError ? '#d9534f' : '#28a745';
+            msgDisplay.style.backgroundColor = isError ? '#f2dede' : '#dff0d8';
+        } else {
+            alert(message);
+        }
+    };
     const token = getToken();
     if (!token) {
         alert("Devi essere loggato.");
@@ -295,12 +391,26 @@ function doPurchase(pkgId) {
         body: JSON.stringify({ package_id: parseInt(pkgId) })
     })
     .then(res => res.json())
-    .then(() => {
-        alert("Pacchetto acquistato con successo.");
+    .then(response => {
+        if (!response.ok) {
+            return response.json().catch(() => null).then(errorData => {
+                const errorMessage = errorData?.message || errorData?.error || "Errore durante l'acquisto.";
+                throw new Error(errorMessage);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Assuming the API returns a success message or specific data upon successful purchase
+        const successMessage = data?.message || "Pacchetto acquistato con successo!";
+        showMessage(successMessage, false);
+        // Optionally, reload user profile or packages if purchase affects them
+        // loadUserProfile(); 
+        // loadPackagesList(); 
     })
     .catch(err => {
         console.error(err);
-        alert("Errore durante l'acquisto.");
+        showMessage(err.message || "Errore durante l'acquisto. Si prega di riprovare.", true);
     });
 }
 
@@ -501,7 +611,7 @@ function loadUserProfile() {
     .catch(err => {
         console.error('Error loading user profile:', err); // DEBUG: Log any error during fetch or processing
         if (contentDiv) {
-            contentDiv.innerHTML = "<p>Error loading profile data. Please try again later.</p>";
+            contentDiv.innerHTML = "<p>Error loading profile.</p>";
         }
     });
 }
