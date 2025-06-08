@@ -37,7 +37,16 @@ function doLogin(e) {
         },
         body: JSON.stringify({ email, password })
     })
-    .then(res => res.json())
+    .then(res => {
+        console.log('API Response Status:', res.status); // DEBUG: Log API response status
+        if (!res.ok) {
+            // Try to parse error response if it's JSON, otherwise use statusText
+            return res.json().catch(() => null).then(errorData => {
+                throw new Error(`HTTP error ${res.status}: ${errorData ? JSON.stringify(errorData) : res.statusText}`);
+            });
+        }
+        return res.json();
+    })
     .then(data => {
         if (data.token) {
             setToken(data.token);
@@ -100,7 +109,16 @@ function doSignup(e) {
         },
         body: JSON.stringify(payload)
     })
-    .then(res => res.json())
+    .then(res => {
+        console.log('API Response Status:', res.status); // DEBUG: Log API response status
+        if (!res.ok) {
+            // Try to parse error response if it's JSON, otherwise use statusText
+            return res.json().catch(() => null).then(errorData => {
+                throw new Error(`HTTP error ${res.status}: ${errorData ? JSON.stringify(errorData) : res.statusText}`);
+            });
+        }
+        return res.json();
+    })
     .then(data => {
         if (data.token) {
             setToken(data.token);
@@ -241,6 +259,18 @@ function doPurchase(pkgId) {
 
 /** ─── PROFILE ─────────────────────────────────────────── **/
 function loadUserProfile() {
+    console.log('loadUserProfile function called'); // DEBUG: Confirm function execution
+
+    const settingsElement = document.querySelector('.unlock-profile-settings');
+    const settingsJson = settingsElement ? settingsElement.dataset.settings : '{}';
+    let settings = {};
+    try {
+        settings = JSON.parse(settingsJson);
+        console.log('Parsed Settings:', settings); // DEBUG: Log parsed settings
+    } catch (e) {
+        console.error('Error parsing profile settings:', e, settingsJson);
+    }
+
     const wrapper = document.querySelector(".unlock-profile-wrapper");
     if (!wrapper) return;
 
@@ -259,13 +289,24 @@ function loadUserProfile() {
     }
 
     // Carica /user
+    // Carica /user
+    console.log(`Fetching user data from: ${API_BASE}/user with token: ${token ? 'present' : 'absent'}`); // DEBUG: Log API call details
     fetch(`${API_BASE}/user`, {
         headers: {
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json"
         }
     })
-    .then(res => res.json())
+    .then(res => {
+        console.log('API Response Status:', res.status); // DEBUG: Log API response status
+        if (!res.ok) {
+            // Try to parse error response if it's JSON, otherwise use statusText
+            return res.json().catch(() => null).then(errorData => {
+                throw new Error(`HTTP error ${res.status}: ${errorData ? JSON.stringify(errorData) : res.statusText}`);
+            });
+        }
+        return res.json();
+    })
     .then(data => {
         console.log('API Response Data:', data); // DEBUG: Log API response
         let html = "";
@@ -418,9 +459,9 @@ function loadUserProfile() {
         }
     })
     .catch(err => {
-        console.error(err);
+        console.error('Error loading user profile:', err); // DEBUG: Log any error during fetch or processing
         if (contentDiv) {
-            contentDiv.innerHTML = "<p>Errore nel caricamento del profilo.</p>";
+            contentDiv.innerHTML = "<p>Error loading profile data. Please try again later.</p>";
         }
     });
 }
