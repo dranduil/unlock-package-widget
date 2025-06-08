@@ -253,7 +253,7 @@ function loadUserProfile() {
         if (redirectUrl) {
             window.location.href = redirectUrl;
         } else if (contentDiv) {
-            contentDiv.innerHTML = "<p>Devi effettuare il login.</p>";
+            contentDiv.innerHTML = "<p>You must be logged.</p>";
         }
         return;
     }
@@ -267,9 +267,13 @@ function loadUserProfile() {
     })
     .then(res => res.json())
     .then(data => {
+        console.log('API Response Data:', data); // DEBUG: Log API response
         let html = "";
 
-        const settings = JSON.parse(document.querySelector('.unlock-profile-settings')?.dataset.settings || '{}');
+        const settingsElement = document.querySelector('.unlock-profile-settings');
+        const settingsJson = settingsElement ? settingsElement.dataset.settings : '{}';
+        const settings = JSON.parse(settingsJson);
+        console.log('Parsed Settings:', settings); // DEBUG: Log parsed settings
 
         // Helper function to generate a field item
         const createField = (label, value, labelKey, valueKey, sectionKey, showFlag) => {

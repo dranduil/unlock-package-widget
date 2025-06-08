@@ -680,7 +680,7 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 				gap: 1.5em; /* Spacing between cards */
 			}
 			.unlock-package-card {
-				flex: 0 1 calc(50% - 0.75em); /* Two columns with spacing */
+				flex: 0 1 calc(33.333% - 1em); /* Three columns with spacing */
 				box-sizing: border-box;
 				display: flex;
 				flex-direction: column;
@@ -870,3 +870,16 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 		<?php
 	}
 }
+
+			/* Responsive adjustments for package columns */
+			@media (max-width: 991px) { /* Medium screens - Two columns */
+				.unlock-package-card {
+					flex: 0 1 calc(50% - 0.75em);
+				}
+			}
+
+			@media (max-width: 600px) { /* Small screens - Single column */
+				.unlock-package-card {
+					flex: 0 1 100%;
+				}
+			}
