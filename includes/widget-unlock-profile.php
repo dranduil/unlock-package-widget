@@ -702,7 +702,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
 
     protected function render() {
         $elementor_settings = $this->get_settings_for_display();
-        $redirect_url = ! empty( $elementor_settings['redirect_url'] ) ? esc_url( $elementor_settings['redirect_url'] ) : '';
+        $redirect_url = ! empty( $elementor_settings['redirect_url']['url'] ) ? esc_url( $elementor_settings['redirect_url']['url'] ) : '';
 
         $js_settings = [];
 
