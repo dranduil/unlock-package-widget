@@ -288,9 +288,6 @@ function loadUserProfile() {
         return;
     }
 
-    // Carica /user
-    // Carica /user
-    console.log(`Fetching user data from: ${API_BASE}/user with token: ${token ? 'present' : 'absent'}`); // DEBUG: Log API call details
     fetch(`${API_BASE}/user`, {
         headers: {
             "Authorization": `Bearer ${token}`,
