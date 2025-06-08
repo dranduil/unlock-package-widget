@@ -258,8 +258,7 @@ function loadSinglePackage(pkgId) {
     })
     .then(res => res.json())
     .then(response => {
-        const pkg = response.data || response; // Handle potential nesting for single package
-        const pkg = response.data || response; // Handle potential nesting for single package
+        const pkg = response.data || response;
         container.innerHTML = ''; // Clear loading message
 
         const item = document.createElement('div');
