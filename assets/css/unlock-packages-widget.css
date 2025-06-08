@@ -13,7 +13,7 @@
 }
 
 /* Packages List Specific Styling - Material 3 Card Grid */
-.unlock-packages-list {
+#unlock-packages-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust minmax for desired card size */
     gap: 24px; /* Material 3 recommends 24px or 16px gaps */
