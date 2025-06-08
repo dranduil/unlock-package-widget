@@ -50,7 +50,7 @@ function doLogin(e) {
     .then(data => {
         if (data.token) {
             setToken(data.token);
-            if (msgDiv) msgDiv.innerText = "Login avvenuto con successo.";
+            if (msgDiv) msgDiv.innerText = "Login successful.";
 
             // Redirect se configurato e non vuoto
             if (redirectUrl && redirectUrl.trim() !== '') {
@@ -62,7 +62,7 @@ function doLogin(e) {
             loadPackagesList();
             loadUserProfile();
         } else {
-            if (msgDiv) msgDiv.innerText = "Login fallito.";
+            if (msgDiv) msgDiv.innerText = "Login failed.";
         }
     })
     .catch(err => {
@@ -85,11 +85,11 @@ function doSignup(e) {
     const redirectUrl = wrapper?.dataset.redirectUrl || "/"; // Default to '/' if not set
 
     if (!name || !surname || !email || !password || !confirm) {
-        if (msgDiv) msgDiv.innerText = "Tutti i campi sono obbligatori.";
+        if (msgDiv) msgDiv.innerText = "All fields are mandatory.";
         return;
     }
     if (password !== confirm) {
-        if (msgDiv) msgDiv.innerText = "Le password non coincidono.";
+        if (msgDiv) msgDiv.innerText = "The passwords do not match.";
         return;
     }
 
@@ -122,7 +122,7 @@ function doSignup(e) {
     .then(data => {
         if (data.token) {
             setToken(data.token);
-            if (msgDiv) msgDiv.innerText = "Registrazione avvenuta con successo.";
+            if (msgDiv) msgDiv.innerText = "Registration successful.";
 
             // Redirect se configurato e non vuoto
             if (redirectUrl && redirectUrl.trim() !== '') {
@@ -133,7 +133,7 @@ function doSignup(e) {
             hideSignupForm();
             loadUserProfile();
         } else {
-            let errorMsg = "Registrazione fallita.";
+            let errorMsg = "Registration failed.";
             if (data.errors) {
                 const errs = [];
                 for (const key in data.errors) {
@@ -146,7 +146,7 @@ function doSignup(e) {
     })
     .catch(err => {
         console.error(err);
-        if (msgDiv) msgDiv.innerText = "Errore di connessione.";
+        if (msgDiv) msgDiv.innerText = "Connection error.";
     });
 }
 
@@ -234,12 +234,12 @@ function loadPackagesList() {
                 container.appendChild(item);
             });
         } else {
-            container.innerHTML = "<p>Nessun pacchetto disponibile.</p>";
+            container.innerHTML = "<p>No packages available.</p>";
         }
     })
     .catch(err => {
         console.error(err);
-        container.innerHTML = "<p>Errore nel caricamento dei pacchetti.</p>";
+        container.innerHTML = "<p>Error loading packages.</p>";
     });
 }
 
@@ -249,7 +249,7 @@ function loadSinglePackage(pkgId) {
     if (!container) return;
 
     const token = getToken();
-    container.innerHTML = "<p>Caricamento dettagli…</p>";
+    container.innerHTML = "<p>Loading details…</p>";
 
     fetch(`${API_BASE}/stripe/packages/${pkgId}`, {
         headers: token
@@ -331,7 +331,7 @@ function loadSinglePackage(pkgId) {
     })
     .catch(err => {
         console.error(err);
-        container.innerHTML = "<p>Errore nel caricamento del pacchetto.</p>";
+        container.innerHTML = "<p>Error loading package.</p>";
     });
 }
 
@@ -409,7 +409,7 @@ function doPurchase(pkgId, messageContainerElement) {
     })
     .catch(err => {
         console.error(err);
-        showMessage(err.message || "Errore durante l'acquisto. Si prega di riprovare.", true);
+        showMessage(err.message || "Error during purchase. Please try again.", true);
     });
 }
 
