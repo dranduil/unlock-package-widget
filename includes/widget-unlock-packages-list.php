@@ -798,6 +798,19 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 					flex: 0 1 100%; /* Single column on smaller screens */
 				}
 			}
+
+			/* Responsive adjustments for package columns */
+			@media (max-width: 991px) { /* Medium screens - Two columns */
+				.unlock-package-card {
+					flex: 0 1 calc(50% - 0.75em);
+				}
+			}
+
+			@media (max-width: 600px) { /* Small screens - Single column */
+				.unlock-package-card {
+					flex: 0 1 100%;
+				}
+			}
 		</style>
 
 		<div class="unlock-packages-wrapper">
@@ -870,16 +883,3 @@ class Unlock_Widget_Packages_List extends \Elementor\Widget_Base {
 		<?php
 	}
 }
-
-			/* Responsive adjustments for package columns */
-			@media (max-width: 991px) { /* Medium screens - Two columns */
-				.unlock-package-card {
-					flex: 0 1 calc(50% - 0.75em);
-				}
-			}
-
-			@media (max-width: 600px) { /* Small screens - Single column */
-				.unlock-package-card {
-					flex: 0 1 100%;
-				}
-			}
