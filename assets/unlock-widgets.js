@@ -321,7 +321,7 @@ function loadUserProfile() {
             }
             return '';
         };
-
+        console.log(settings);
         // Header con avatar e nome
         html += `<div class="unlock-profile-header">`;
         if (settings.show_avatar === 'yes' && data.user.avatarUrl) {
@@ -447,8 +447,6 @@ function loadUserProfile() {
                      </div>`;
         }
 
-        console.log(html);
-        console.log(contentDiv);
         if (contentDiv) {
             contentDiv.innerHTML = html;
         }
