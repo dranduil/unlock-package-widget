@@ -701,242 +701,92 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
     }
 
     protected function render() {
-        $settings     = $this->get_settings_for_display();
-        $redirect_url = ( ! empty( $settings['redirect_url']['url'] ) )
-            ? esc_url( $settings['redirect_url']['url'] )
-            : '';
+        $elementor_settings = $this->get_settings_for_display();
+        $redirect_url = ! empty( $elementor_settings['redirect_url'] ) ? esc_url( $elementor_settings['redirect_url'] ) : '';
 
-        // Collect which sections to show
-        $show_sections = [
-            'avatar'       => ( $settings['show_avatar'] === 'yes' ),
-            'fullname'     => ( $settings['show_fullname'] === 'yes' ),
-            'email'        => ( $settings['show_email'] === 'yes' ),
-            'phone'        => ( $settings['show_phone'] === 'yes' ),
-            'jobtitle'     => ( $settings['show_jobtitle'] === 'yes' ),
-            'location'     => ( $settings['show_location'] === 'yes' ),
-            'company'      => ( $settings['show_company'] === 'yes' ),
-            'joindate'     => ( $settings['show_joindate'] === 'yes' ),
-            'roles'        => ( $settings['show_roles'] === 'yes' ),
-            'biography'    => ( $settings['show_biography'] === 'yes' ),
-            'link'         => ( $settings['show_link'] === 'yes' ),
-            'subscription' => ( $settings['show_subscription'] === 'yes' ),
-            'payment'      => ( $settings['show_payment'] === 'yes' ),
-            'nationality'  => ( $settings['show_nationality'] === 'yes' ),
-            'gender'       => ( $settings['show_gender'] === 'yes' ),
-            'credits'      => ( $settings['show_credits'] === 'yes' ),
+        $js_settings = [];
+
+        // Define mappings from Elementor control IDs to JavaScript setting keys
+        $visibility_map = [
+            'show_avatar'       => 'show_avatar',
+            'show_fullname'     => 'show_fullname',
+            'show_email'        => 'show_email',
+            'show_phone'        => 'show_phone',
+            'show_jobtitle'     => 'show_job_title',      // Elementor 'show_jobtitle' -> JS 'show_job_title'
+            'show_location'     => 'show_location',
+            'show_company'      => 'show_company',
+            'show_joindate'     => 'show_join_date',      // Elementor 'show_joindate' -> JS 'show_join_date'
+            'show_roles'        => 'show_roles',
+            'show_biography'    => 'show_biography',
+            'show_link'         => 'show_link',
+            'show_subscription' => 'show_subscription',
+            'show_payment'      => 'show_payment_methods',// Elementor 'show_payment' -> JS 'show_payment_methods'
+            'show_nationality'  => 'show_nationality',
+            'show_gender'       => 'show_gender',
+            'show_credits'      => 'show_credits',
         ];
 
-        // Default labels (ensure these are translated in _register_controls if needed)
-        $default_labels = [
-            'avatar'       => __( 'Avatar', 'unlock-elementor-widgets' ),
-            'fullname'     => __( 'Full Name', 'unlock-elementor-widgets' ),
-            'email'        => __( 'Email', 'unlock-elementor-widgets' ),
-            'phone'        => __( 'Phone', 'unlock-elementor-widgets' ),
-            'jobtitle'     => __( 'Job Title', 'unlock-elementor-widgets' ),
-            'location'     => __( 'Location', 'unlock-elementor-widgets' ),
-            'company'      => __( 'Company', 'unlock-elementor-widgets' ),
-            'joindate'     => __( 'Joined', 'unlock-elementor-widgets' ),
-            'roles'        => __( 'Roles', 'unlock-elementor-widgets' ),
-            'biography'    => __( 'Biography', 'unlock-elementor-widgets' ),
-            'link'         => __( 'Website', 'unlock-elementor-widgets' ),
-            'subscription' => __( 'Subscription', 'unlock-elementor-widgets' ),
-            'payment'      => __( 'Payment Methods', 'unlock-elementor-widgets' ),
-            'nationality'  => __( 'Nationality', 'unlock-elementor-widgets' ),
-            'gender'       => __( 'Gender', 'unlock-elementor-widgets' ),
-            'credits'      => __( 'Credits', 'unlock-elementor-widgets' ),
-        ];
-
-        // Get custom labels from settings, fallback to default
-        $labels = [];
-        foreach ($default_labels as $key => $default_label) {
-            $labels[$key] = !empty($settings["label_{$key}"]) ? $settings["label_{$key}"] : $default_label;
+        foreach ($visibility_map as $elementor_key => $js_key) {
+            $js_settings[$js_key] = !empty($elementor_settings[$elementor_key]) && $elementor_settings[$elementor_key] === 'yes' ? 'yes' : 'no';
         }
+
+        $label_map = [
+            'label_fullname'     => 'label_fullname', // Though not directly used by createField, good for consistency
+            'label_email'        => 'label_email',
+            'label_phone'        => 'label_phone',
+            'label_jobtitle'     => 'label_job_title',
+            'label_location'     => 'label_location',
+            'label_company'      => 'label_company',
+            'label_joindate'     => 'label_join_date',
+            'label_roles'        => 'label_roles',
+            'label_biography'    => 'label_biography',
+            'label_link'         => 'label_link',
+            'label_nationality'  => 'label_nationality',
+            // 'label_phone_code' is not a direct Elementor control, but JS might use it if Nationality is shown.
+            // It's derived data, so JS handles it based on nationality data from API.
+            'label_gender'       => 'label_gender',
+            'label_credits'      => 'label_credits',
+            // Section Headings (from Elementor controls)
+            'section_user_info_heading_text' => 'label_user_info_heading',       // Assuming Elementor control ID is 'section_user_info_heading_text'
+            'section_bio_link_heading_text' => 'label_bio_link_heading',         // Assuming Elementor control ID is 'section_bio_link_heading_text'
+            'section_subscription_heading_text' => 'label_subscription_heading', // Assuming Elementor control ID is 'section_subscription_heading_text'
+            'section_payment_methods_heading_text' => 'label_payment_methods_heading',// Assuming Elementor control ID is 'section_payment_methods_heading_text'
+            'section_nat_gender_heading_text' => 'label_nat_gender_heading',    // Assuming Elementor control ID is 'section_nat_gender_heading_text'
+            'section_credits_heading_text' => 'label_credits_heading',       // Assuming Elementor control ID is 'section_credits_heading_text'
+            // Subscription specific labels
+            'label_subscription_plan' => 'label_subscription_plan',
+            'label_subscription_renewal' => 'label_subscription_renewal',
+            'label_subscription_features' => 'label_subscription_features',
+            'label_no_subscription' => 'label_no_subscription',
+            // Payment specific labels
+            'label_no_payment_methods' => 'label_no_payment_methods',
+        ];
+
+        // Populate labels, falling back to defaults if not set in Elementor
+        // Note: Elementor controls have default values, so they should usually be set.
+        foreach ($label_map as $elementor_key => $js_key) {
+            if (isset($elementor_settings[$elementor_key]) && !empty($elementor_settings[$elementor_key])) {
+                $js_settings[$js_key] = $elementor_settings[$elementor_key];
+            } else {
+                // Fallback or default logic if needed, though Elementor usually provides defaults.
+                // For example, for 'label_user_info_heading', if $elementor_settings['section_user_info_heading_text'] is empty,
+                // you might set a hardcoded default: $js_settings['label_user_info_heading'] = 'User Information';
+            }
+        }
+
+        // Avatar size (JS currently uses CSS for this, but can be passed if needed for JS logic)
+        if ($js_settings['show_avatar'] === 'yes' && isset($elementor_settings['avatar_size']['size'])) {
+            $js_settings['avatar_size'] = intval($elementor_settings['avatar_size']['size']);
+        }
+
         ?>
-        <style>
-            .unlock-profile-wrapper {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-                line-height: 1.6;
-                color: #333;
-                background-color: #f9f9f9;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-            .unlock-profile-header {
-                display: flex;
-                align-items: center;
-                margin-bottom: 25px;
-                padding-bottom: 20px;
-                border-bottom: 1px solid #eee;
-            }
-            .unlock-profile-avatar-wrapper {
-                margin-right: 20px;
-            }
-            .unlock-profile-avatar {
-                border-radius: 50%;
-                object-fit: cover;
-            }
-            .unlock-profile-name-title h2 {
-                margin: 0 0 5px 0;
-                font-size: 1.8em;
-                color: #222;
-            }
-            .unlock-profile-name-title p {
-                margin: 0;
-                font-size: 1em;
-                color: #555;
-            }
-            .unlock-profile-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 20px;
-            }
-            .unlock-profile-section {
-                background-color: #fff;
-                padding: 15px;
-                border-radius: 6px;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            }
-            .unlock-profile-section h4.unlock-profile-field-label {
-                font-size: 0.9em;
-                color: #777;
-                margin-top: 0;
-                margin-bottom: 5px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-            .unlock-profile-section .unlock-profile-field-value {
-                font-size: 1em;
-                color: #333;
-                word-wrap: break-word;
-            }
-            .unlock-profile-section-biography .unlock-profile-field-value {
-                white-space: pre-wrap; /* Preserve line breaks in biography */
-            }
-            .unlock-profile-section ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-            .unlock-profile-section ul li {
-                margin-bottom: 3px;
-            }
-            .unlock-profile-loading,
-            .unlock-profile-not-logged-in {
-                text-align: center;
-                padding: 20px;
-                font-size: 1.1em;
-                color: #777;
-            }
-            /* Responsive adjustments */
-            @media (max-width: 768px) {
-                .unlock-profile-header {
-                    flex-direction: column;
-                    text-align: center;
-                }
-                .unlock-profile-avatar-wrapper {
-                    margin-right: 0;
-                    margin-bottom: 15px;
-                }
-                .unlock-profile-name-title h2 {
-                    font-size: 1.6em;
-                }
-                .unlock-profile-grid {
-                    grid-template-columns: 1fr; /* Stack on smaller screens */
-                }
-            }
-        </style>
-        <div class="unlock-profile-wrapper"
-             <?php if ( $redirect_url ) : ?>data-redirect-url="<?php echo $redirect_url; ?>"<?php endif; ?>>
+        <div class="unlock-profile-wrapper" data-redirect-url="<?php echo esc_attr( $redirect_url ); ?>">
             <div id="unlock-profile-content">
-                <?php if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) : ?>
-                    <?php
-                    // Demo data for Elementor editor (English)
-                    $demo_data = [
-                        'avatar'       => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&q=80',
-                        'fullname'     => 'Alex Johnson',
-                        'email'        => 'alex.johnson@example.com',
-                        'phone'        => '+1 (555) 123-4567',
-                        'jobtitle'     => 'Senior Software Engineer',
-                        'location'     => 'San Francisco, CA',
-                        'company'      => 'Tech Solutions Inc.',
-                        'joindate'     => '2022-08-20',
-                        'roles'        => 'Administrator, Contributor',
-                        'biography'    => "Passionate developer with a knack for creating elegant solutions to complex problems.\nLoves hiking and photography in free time.",
-                        'link'         => 'https://alexjohnson.dev',
-                        'subscription' => 'Pro Membership (Active until 2025-01-01)',
-                        'payment'      => 'Mastercard ending in 5678',
-                        'nationality'  => 'Canadian',
-                        'gender'       => 'Male',
-                        'credits'      => '500 Available Credits',
-                    ];
-
-                    $avatar_size_px = isset($settings['avatar_size']['size']) ? intval($settings['avatar_size']['size']) : 80;
-                    $avatar_border_radius_val = isset($settings['avatar_border_radius']['top']) ? esc_attr($settings['avatar_border_radius']['top'] . $settings['avatar_border_radius']['unit']) : '50%';
-                    ?>
-                    <div class="unlock-profile-header">
-                        <?php if ( $show_sections['avatar'] ) : ?>
-                        <div class="unlock-profile-avatar-wrapper">
-                            <img src="<?php echo esc_url( $demo_data['avatar'] ); ?>" alt="<?php esc_attr_e( 'User Avatar', 'unlock-elementor-widgets' ); ?>" class="unlock-profile-avatar" style="width: <?php echo $avatar_size_px; ?>px; height: <?php echo $avatar_size_px; ?>px; border-radius: <?php echo $avatar_border_radius_val; ?>;">
-                        </div>
-                        <?php endif; ?>
-                        <div class="unlock-profile-name-title">
-                            <?php if ( $show_sections['fullname'] ) : ?>
-                                <h2><?php echo esc_html( $demo_data['fullname'] ); ?></h2>
-                            <?php endif; ?>
-                            <?php if ( $show_sections['jobtitle'] ) : ?>
-                                <p><?php echo esc_html( $demo_data['jobtitle'] ); ?></p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <div class="unlock-profile-grid">
-                        <?php foreach ( $show_sections as $key => $is_visible ) : ?>
-                            <?php // Avatar, fullname, and jobtitle are handled in the header
-                            if ( $key === 'avatar' || $key === 'fullname' || $key === 'jobtitle' ) continue; ?>
-                            <?php if ( $is_visible && isset( $demo_data[ $key ] ) ) : ?>
-                                <div class="unlock-profile-section unlock-profile-section-<?php echo esc_attr( $key ); ?>">
-                                    <h4 class="unlock-profile-field-label"><?php echo esc_html( $labels[ $key ] ); ?></h4>
-                                    <div class="unlock-profile-field-value">
-                                        <?php
-                                        if ($key === 'roles') {
-                                            $roles_array = explode(',', $demo_data[$key]);
-                                            echo '<ul>';
-                                            foreach ($roles_array as $role) {
-                                                echo '<li>' . esc_html(trim($role)) . '</li>';
-                                            }
-                                            echo '</ul>';
-                                        } elseif ($key === 'link' && filter_var($demo_data[$key], FILTER_VALIDATE_URL)) {
-                                            echo '<a href="' . esc_url($demo_data[$key]) . '" target="_blank" rel="noopener noreferrer">' . esc_html($demo_data[$key]) . '</a>';
-                                        } else {
-                                            echo nl2br(esc_html( $demo_data[ $key ] ));
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
-
-                <?php else : ?>
-                    <div class="unlock-profile-loading"><p><?php esc_html_e( 'Loading profile data...', 'unlock-elementor-widgets' ); ?></p></div>
-                <?php endif; ?>
+                <p>Loading profile...</p>
             </div>
-
-            <!-- Data attributes for JS -->
-            <div class="unlock-profile-settings" style="display:none;"
-                 <?php foreach ( $show_sections as $key => $val ) : ?>
-                     data-show-<?php echo esc_attr( $key ); ?>="<?php echo $val ? '1' : '0'; ?>"
-                 <?php endforeach; ?>
-                 <?php if ( $settings['show_avatar'] === 'yes' && isset($settings['avatar_size']['size']) ) : ?>
-                     data-avatar-size="<?php echo intval( $settings['avatar_size']['size'] ); ?>"
-                 <?php endif; ?>
-                 <?php foreach ( $labels as $key => $label_val ) : ?>
-                    <?php if ( $show_sections[$key] ) : ?>
-                        data-label-<?php echo esc_attr( $key ); ?>="<?php echo esc_attr( $label_val ); ?>"
-                    <?php endif; ?>
-                 <?php endforeach; ?>
-            ></div>
+            <div class="unlock-profile-settings" style="display:none;" 
+                 data-settings='<?php echo esc_attr( wp_json_encode( $js_settings ) ); ?>'>
+            </div>
         </div>
         <?php
     }
