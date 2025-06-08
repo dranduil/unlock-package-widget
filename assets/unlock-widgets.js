@@ -447,7 +447,8 @@ function loadUserProfile() {
                      </div>`;
         }
 
-
+        console.log(html);
+        console.log(contentDiv);
         if (contentDiv) {
             contentDiv.innerHTML = html;
         }
