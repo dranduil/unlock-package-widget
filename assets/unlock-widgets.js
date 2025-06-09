@@ -432,21 +432,17 @@ function doPurchase(pkgId, messageContainerElement) {
 }
 
 /** ─── PROFILE ─────────────────────────────────────────── **/
-function loadUserProfile() {
-    console.log('loadUserProfile function called'); // DEBUG: Confirm function execution
-
-    const settingsElement = document.querySelector('.unlock-profile-settings');
-    const settingsJson = settingsElement ? settingsElement.dataset.settings : '{}';
-    let settings = {};
-    try {
-        settings = JSON.parse(settingsJson);
-        console.log('Parsed Settings:', settings); // DEBUG: Log parsed settings
-    } catch (e) {
-        console.error('Error parsing profile settings:', e, settingsJson);
+async function loadUserProfile() {
+    console.log('loadUserProfile called'); // Added for debugging
+    const wrapper = document.querySelector(".unlock-profile-widget"); // Changed from .unlock-profile-wrapper
+    if (!wrapper) {
+        console.error('Profile wrapper .unlock-profile-widget not found. Exiting loadUserProfile.');
+        return;
     }
 
-    const wrapper = document.querySelector(".unlock-profile-wrapper");
-    if (!wrapper) return;
+    const settings = JSON.parse(wrapper.dataset.settings || '{}');
+    const nonce = wrapper.dataset.nonce;
+    const apiBaseUrl = unlock_widgets_data.api_base_url;
 
     const redirectUrl = wrapper.dataset.redirectUrl || "";
     const contentDiv  = document.querySelector("#unlock-profile-content");
