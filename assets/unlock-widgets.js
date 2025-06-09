@@ -433,8 +433,8 @@ function doPurchase(pkgId, messageContainerElement) {
 
 /** ─── PROFILE ─────────────────────────────────────────── **/
 async function loadUserProfile() {
-    console.log('loadUserProfile called'); // Added for debugging
-    const wrapper = document.querySelector(".unlock-profile-widget"); // Changed from .unlock-profile-wrapper
+    console.log('loadUserProfile called'); 
+    const wrapper = document.querySelector(".unlock-profile-widget"); 
     if (!wrapper) {
         console.error('Profile wrapper .unlock-profile-widget not found. Exiting loadUserProfile.');
         return;
@@ -443,40 +443,54 @@ async function loadUserProfile() {
     const settings = JSON.parse(wrapper.dataset.settings || '{}');
     const nonce = wrapper.dataset.nonce;
     const apiBaseUrl = unlock_widgets_data.api_base_url;
-
     const redirectUrl = wrapper.dataset.redirectUrl || "";
     const contentDiv  = document.querySelector("#unlock-profile-content");
     const token       = getToken();
 
-    // Se non loggato e c’è redirect, reindirizza subito
+    // Authentication check: if not logged in and redirect URL is provided, redirect.
     if (!token) {
+        console.log('User not authenticated.');
         if (redirectUrl) {
+            console.log('Redirecting to:', redirectUrl);
             window.location.href = redirectUrl;
         } else if (contentDiv) {
-            contentDiv.innerHTML = "<p>You must be logged.</p>";
+            console.log('Displaying "You must be logged in" message.');
+            contentDiv.innerHTML = "<p>You must be logged in to view this content.</p>";
         }
-        return;
+        return; // Stop further execution if not authenticated
     }
 
-    fetch(`${API_BASE}/user`, {
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json"
+    if (contentDiv) {
+        contentDiv.innerHTML = '<p class="unlock-loading-message">Loading profile details...</p>';
+    }
+
+    try {
+        console.log('Fetching user profile data from:', `${apiBaseUrl}unlock/v1/profile`);
+        const response = await fetch(`${apiBaseUrl}unlock/v1/profile`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-WP-Nonce': nonce,
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log('Fetch response received:', response.status);
+
+        if (!response.ok) {
+            let errorData = { message: response.statusText }; // Default error message
+            try {
+                 errorData = await response.json();
+            } catch (e) {
+                console.warn('Could not parse error response as JSON.');
+            }
+            console.error('Error fetching profile (not ok):', response.status, errorData.message || response.statusText);
+            if (contentDiv) contentDiv.innerHTML = `<p>Error loading profile: ${errorData.message || response.statusText}</p>`;
+            return;
         }
-    })
-    .then(res => {
-        console.log('API Response Status:', res.status); // DEBUG: Log API response status
-        if (!res.ok) {
-            // Try to parse error response if it's JSON, otherwise use statusText
-            return res.json().catch(() => null).then(errorData => {
-                throw new Error(`HTTP error ${res.status}: ${errorData ? JSON.stringify(errorData) : res.statusText}`);
-            });
-        }
-        return res.json();
-    })
-    .then(data => {
-        console.log('API Response Data:', data); // DEBUG: Log API response
-        let html = "";
+
+        const data = await response.json();
+        console.log('Profile data:', data);
 
         // The 'settings' variable parsed before the API call is already in scope and will be used here.
 
