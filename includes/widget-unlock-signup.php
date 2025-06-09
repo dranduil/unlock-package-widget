@@ -40,7 +40,7 @@ class Unlock_Widget_Signup extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Heading Text', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Registrati', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Sign Up', 'unlock-elementor-widgets' ),
 				'placeholder' => __( 'Inserisci il testo dell’intestazione', 'unlock-elementor-widgets' ),
 			]
 		);
@@ -51,7 +51,7 @@ class Unlock_Widget_Signup extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Name Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Nome', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Name', 'unlock-elementor-widgets' ),
 				'placeholder' => __( 'Inserisci placeholder per Nome', 'unlock-elementor-widgets' ),
 			]
 		);
@@ -62,7 +62,7 @@ class Unlock_Widget_Signup extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Surname Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Cognome', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Surname', 'unlock-elementor-widgets' ),
 				'placeholder' => __( 'Inserisci placeholder per Cognome', 'unlock-elementor-widgets' ),
 			]
 		);
@@ -95,7 +95,7 @@ class Unlock_Widget_Signup extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Confirm Password Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Conferma Password', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Confirm Password', 'unlock-elementor-widgets' ),
 				'placeholder' => __( 'Inserisci placeholder per Conferma Password', 'unlock-elementor-widgets' ),
 			]
 		);

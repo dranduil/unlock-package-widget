@@ -48,7 +48,7 @@ class Unlock_Widget_Single_Package extends \Elementor\Widget_Base {
 			[
 				'label' => __( 'Widget Title (Editor Preview)', 'unlock-elementor-widgets' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'default' => __( 'Dettaglio Pacchetto', 'unlock-elementor-widgets' ),
+				'default' => __( 'Package Details', 'unlock-elementor-widgets' ),
 				'separator' => 'before',
 			]
 		);
@@ -486,7 +486,7 @@ class Unlock_Widget_Single_Package extends \Elementor\Widget_Base {
 				if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
 					echo esc_html( $settings['widget_title'] );
 				} else {
-					esc_html_e( 'Dettaglio Pacchetto', 'unlock-elementor-widgets' );
+					esc_html_e( 'Package Details', 'unlock-elementor-widgets' );
 				}
 				?>
 			</h3>
@@ -512,7 +512,7 @@ class Unlock_Widget_Single_Package extends \Elementor\Widget_Base {
 						<button class="unlock-buy-btn" data-id="<?php echo esc_attr( $editor_pkg_id ); ?>">Buy</button>
 					</div>
 				<?php else : ?>
-					<p><?php esc_html_e( 'Caricamento dettagli…', 'unlock-elementor-widgets' ); ?></p>
+					<p><?php esc_html_e( 'Loading details…', 'unlock-elementor-widgets' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>

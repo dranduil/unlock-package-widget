@@ -89,7 +89,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Full Name Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Name', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Name', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Name', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_fullname' => 'yes' ],
             ]
         );
@@ -100,7 +100,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Email Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Email', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Email', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Email', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_email' => 'yes' ],
             ]
         );
@@ -111,7 +111,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Phone Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Phone', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Phone', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Phone', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_phone' => 'yes' ],
             ]
         );
@@ -122,7 +122,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Job Title Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Job Title', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Job Title', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Job Title', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_jobtitle' => 'yes' ],
             ]
         );
@@ -133,7 +133,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Location Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Location', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Location', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Location', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_location' => 'yes' ],
             ]
         );
@@ -144,7 +144,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Company Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Company', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Company', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Company', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_company' => 'yes' ],
             ]
         );
@@ -155,7 +155,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Join Date Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Joined On', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Joined On', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Joined On', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_joindate' => 'yes' ],
             ]
         );
@@ -166,7 +166,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Roles Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Roles', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Roles', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Roles', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_roles' => 'yes' ],
             ]
         );
@@ -177,7 +177,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Biography Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Biography', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Biography', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Biography', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_biography' => 'yes' ],
             ]
         );
@@ -188,7 +188,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Link Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Website', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Website', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Website', 'unlock-elementor-widgets' )
                 'condition'   => [ 'show_link' => 'yes' ],
             ]
         );
@@ -199,7 +199,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Subscription Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Subscription', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Subscription', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Subscription', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_subscription' => 'yes' ],
             ]
         );
@@ -210,7 +210,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Payment Methods Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Payment Methods', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Payment Methods', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Payment Methods', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_payment' => 'yes' ],
             ]
         );
@@ -221,7 +221,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Nationality Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Nationality', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Nationality', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Nationality', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_nationality' => 'yes' ],
             ]
         );
@@ -232,7 +232,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Gender Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Gender', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Gender', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Gender', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_gender' => 'yes' ],
             ]
         );
@@ -243,7 +243,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Credits Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Credits', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'Es. Credits', 'unlock-elementor-widgets' ),
+                'placeholder' => __( 'E.g., Credits', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_credits' => 'yes' ],
             ]
         );
@@ -706,6 +706,25 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
 
         $js_settings = [];
 
+        if ( ! is_user_logged_in() ) {
+            if ( ! empty( $redirect_url ) ) {
+                // User is not logged in, and a redirect URL is set
+                echo '<div class="unlock-profile-widget-login-message">';
+                echo '<p>' . esc_html__( 'You must be logged in to view this content.', 'unlock-elementor-widgets' ) . '</p>';
+                echo '<a href="' . esc_url( $redirect_url ) . '" class="elementor-button elementor-button-default">' . esc_html__( 'Login', 'unlock-elementor-widgets' ) . '</a>';
+                echo '</div>';
+                return; // Stop further rendering
+            } else {
+                // User is not logged in, and no redirect URL is set
+                echo '<div class="unlock-profile-widget-login-message">';
+                echo '<p>' . esc_html__( 'Please log in to view your profile.', 'unlock-elementor-widgets' ) . '</p>';
+                // Optionally, you could provide a generic login link if available, or just the message.
+                echo '</div>';
+                return; // Stop further rendering
+            }
+        }
+
+
         // Define mappings from Elementor control IDs to JavaScript setting keys
         $visibility_map = [
             'show_avatar'       => 'show_avatar',
@@ -780,7 +799,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
         }
 
         ?>
-        <div class="unlock-profile-widget" data-redirect-url="<?php echo esc_attr( $redirect_url ); ?>">
+        <div class="unlock-profile-widget" data-redirect-url="<?php echo esc_attr( $redirect_url ); ?>" data-is-logged-in="<?php echo is_user_logged_in() ? 'true' : 'false'; ?>">
             <div id="unlock-profile-content">
                 <!-- Content will be dynamically loaded by JavaScript -->
                 <!-- Basic structure for the card layout -->

@@ -51,7 +51,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Email Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Email', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Email', 'unlock-package-widget' ),
 				'placeholder' => __( 'Insert email placeholder', 'unlock-elementor-widgets' ),
 			]
 		);
@@ -62,7 +62,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Password Placeholder', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Password', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Password', 'unlock-package-widget' ),
 				'placeholder' => __( 'Insert password placeholder', 'unlock-elementor-widgets' ),
 			]
 		);
@@ -73,7 +73,7 @@ class Unlock_Widget_Login extends \Elementor\Widget_Base {
 			[
 				'label'       => __( 'Button Text', 'unlock-elementor-widgets' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => __( 'Login', 'unlock-elementor-widgets' ),
+				'default'     => __( 'Login', 'unlock-package-widget' ),
 				'placeholder' => __( 'Insert button label', 'unlock-elementor-widgets' ),
 			]
 		);
