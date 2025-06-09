@@ -780,9 +780,17 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
         }
 
         ?>
-        <div class="unlock-profile-wrapper" data-redirect-url="<?php echo esc_attr( $redirect_url ); ?>">
+        <div class="unlock-profile-widget" data-redirect-url="<?php echo esc_attr( $redirect_url ); ?>">
             <div id="unlock-profile-content">
-                <p>Loading profile...</p>
+                <!-- Content will be dynamically loaded by JavaScript -->
+                <!-- Basic structure for the card layout -->
+                <div class="unlock-profile-card-header">
+                    <!-- Avatar and user info will be injected here by JS -->
+                </div>
+                <div class="unlock-profile-dashboard-body">
+                    <!-- Sections will be injected here by JS -->
+                </div>
+                 <p style="text-align:center; padding: 20px; color: #777;">Loading profile details...</p>
             </div>
             <div class="unlock-profile-settings" style="display:none;" 
                  data-settings='<?php echo esc_attr( wp_json_encode( $js_settings ) ); ?>'>

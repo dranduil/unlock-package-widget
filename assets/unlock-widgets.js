@@ -389,16 +389,24 @@ function doPurchase(pkgId, messageContainerElement) {
         },
         body: JSON.stringify({ package_id: parseInt(pkgId) })
     })
-    .then(res => res.json())
-    .then(response => {
-        if (!response.ok) {
-            return response.json().catch(() => null).then(errorData => {
-                const errorMessage = errorData?.message || errorData?.error || "Errore durante l'acquisto.";
-                throw new Error(errorMessage);
+    .then(res => {
+        if (!res.ok) {
+            // Attempt to parse error as JSON, but fallback if not possible
+            return res.text().then(text => {
+                try {
+                    const errorData = JSON.parse(text);
+                    const errorMessage = errorData?.message || errorData?.error || `Error: ${res.status} ${res.statusText}`;
+                    throw new Error(errorMessage);
+                } catch (e) {
+                    // If response is not JSON, use status text or generic message
+                    throw new Error(`Request failed: ${res.status} ${res.statusText}. ${text || ''}`.trim());
+                }
             });
         }
-        return response.json();
+        return res.json(); // Only call .json() once if res.ok
     })
+    // This block is now handled by the improved .then(res => ...) above
+    // .then(response => { ... }) // Keep this comment to indicate removal
     .then(data => {
         // Assuming the API returns a success message or specific data upon successful purchase
         const successMessage = data?.message || "Package purchased successfully!";
