@@ -205,9 +205,8 @@ function loadPackagesList() {
                 priceEl.innerHTML = pkg.price; // Example currency
                 contentContainer.appendChild(priceEl);
 
-                // Optional: Features list - uncomment and style if needed
-                /*
-                if (pkg.features && pkg.features.length > 0) {
+                // Features list
+                if (pkg.features && Array.isArray(pkg.features) && pkg.features.length > 0) {
                     const featuresList = document.createElement('ul');
                     featuresList.classList.add('unlock-package-features'); // Add a class for styling
                     pkg.features.forEach(f => {
@@ -217,7 +216,6 @@ function loadPackagesList() {
                     });
                     contentContainer.appendChild(featuresList);
                 }
-                */
 
                 const buyButton = document.createElement("a"); // Changed to <a> for better styling as a button
                 buyButton.classList.add("unlock-package-details-link"); // Re-using class from single for consistency or create new
@@ -380,6 +378,18 @@ function doPurchase(pkgId, messageContainerElement) {
         return;
     }
 
+    // TODO: Implement UI for payment method selection here
+    // For now, we'll pass null, the backend should handle default or error if required.
+    const paymentMethodId = null; 
+
+    const purchasePayload = { 
+        package_id: parseInt(pkgId)
+    };
+
+    if (paymentMethodId) {
+        purchasePayload.payment_method_id = paymentMethodId;
+    }
+
     fetch(`${API_BASE}/purchase-package`, {
         method: "POST",
         headers: {
@@ -387,7 +397,7 @@ function doPurchase(pkgId, messageContainerElement) {
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json"
         },
-        body: JSON.stringify({ package_id: parseInt(pkgId) })
+        body: JSON.stringify(purchasePayload)
     })
     .then(res => {
         if (!res.ok) {
@@ -578,7 +588,8 @@ function loadUserProfile() {
                 html += `<ul class="unlock-profile-field-value unlock-profile-payment-list">`;
                 data.paymentMethods.forEach(pm => {
                     const isDefault = (data.paymentMethod && pm.id === data.paymentMethod.id) ? " (Default)" : "";
-                    html += `<li>${pm.brand || pm.type || "–"} ending in ${pm.last4 || "-"}${isDefault}</li>`;
+                    // Add data-id attribute to the list item
+                    html += `<li data-id="${pm.id}">${pm.brand || pm.type || "–"} ending in ${pm.last4 || "-"}${isDefault}</li>`;
                 });
                 html += `</ul>`;
             } else {
