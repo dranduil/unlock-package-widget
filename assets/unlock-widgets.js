@@ -716,7 +716,7 @@ function setupUnlockWidgets() {
     });
 
     // ───── PROFILE ───────────────────────────────────────────
-    if (document.querySelector(".unlock-profile-wrapper")) {
+    if (document.querySelector(".unlock-profile-widget")) {
         loadUserProfile();
     }
 }
