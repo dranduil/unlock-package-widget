@@ -4,8 +4,14 @@ function setToken(token) {
     document.cookie = `unlock_token=${token}; path=/`;
 }
 function getToken() {
-    const match = document.cookie.match(/(^| )unlock_token=([^;]+)/);
-    return match ? match[2] : null;
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith('unlock_token=')) {
+            return cookie.substring('unlock_token='.length);
+        }
+    }
+    return null;
 }
 function hideSignupForm() {
     const form = document.querySelector("#unlock-signup-form");
