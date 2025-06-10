@@ -15,13 +15,32 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 1) Enqueue JS (solo se Elementor è attivo o su front-end)
  */
 add_action( 'wp_enqueue_scripts', function() {
+    // Enqueue Stripe.js
+    wp_enqueue_script(
+        'stripe-js',
+        'https://js.stripe.com/v3/',
+        [],
+        null,
+        true // Load in footer
+    );
+
 	wp_enqueue_script(
 		'unlock-widgets-js',
 		plugins_url( 'assets/unlock-widgets.js', __FILE__ ),
-		[],   // nessuna dipendenza particolare
+		['stripe-js'],   // Add stripe-js as a dependency
 		null,
 		true  // carica in footer
 	);
+
+    // Localize script with Stripe public key and other settings
+    // IMPORTANT: Replace 'YOUR_STRIPE_PUBLISHABLE_KEY' with your actual Stripe publishable key
+    // You should ideally fetch this from WordPress options or a secure constant.
+    $stripe_settings = [
+        'publishableKey' => defined('UNLOCK_STRIPE_PUBLISHABLE_KEY') ? UNLOCK_STRIPE_PUBLISHABLE_KEY : 'YOUR_STRIPE_PUBLISHABLE_KEY_PLACEHOLDER',
+        // Add other settings like API_BASE if not already globally available in JS
+        // 'apiBaseUrl' => defined('UNLOCK_API_BASE_URL') ? UNLOCK_API_BASE_URL : 'YOUR_API_BASE_URL_PLACEHOLDER',
+    ];
+    wp_localize_script( 'unlock-widgets-js', 'unlockStripeSettings', $stripe_settings );
 
 	// Se prevedi CSS custom, potresti aggiungere qui un enqueue_style
 	// wp_enqueue_style( 'unlock-widgets-css', plugins_url('assets/unlock-widgets.css', __FILE__) );

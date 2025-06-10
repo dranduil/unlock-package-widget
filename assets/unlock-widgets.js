@@ -341,7 +341,136 @@ function loadSinglePackage(pkgId) {
 }
 
 /** ─── Purchase Package ─────────────────────────────────── **/
-function doPurchase(pkgId, messageContainerElement) {
+// Initialize Stripe globally
+let stripe = null;
+let elements = null;
+let defaultPaymentMethodId = null;
+
+// Initialize Stripe when the script loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof unlockStripeSettings !== 'undefined' && unlockStripeSettings.publishableKey) {
+        stripe = Stripe(unlockStripeSettings.publishableKey);
+        elements = stripe.elements();
+    } else {
+        console.error('Stripe publishable key not found');
+    }
+});
+
+// Create and show Stripe payment modal
+async function showStripePaymentModal() {
+    return new Promise((resolve, reject) => {
+        // Create modal container
+        const modalContainer = document.createElement('div');
+        modalContainer.className = 'unlock-stripe-modal';
+        modalContainer.innerHTML = `
+            <div class="unlock-stripe-modal-content">
+                <div class="unlock-stripe-modal-header">
+                    <h3>Add Payment Method</h3>
+                    <button class="unlock-stripe-modal-close">&times;</button>
+                </div>
+                <div class="unlock-stripe-modal-body">
+                    <form id="unlock-payment-form">
+                        <div id="unlock-card-element"></div>
+                        <div id="unlock-card-errors" role="alert"></div>
+                        <button type="submit" class="unlock-stripe-submit">Add Payment Method</button>
+                    </form>
+                </div>
+            </div>
+        `;
+
+        // Add modal styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .unlock-stripe-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+            .unlock-stripe-modal-content {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 90%;
+                max-width: 500px;
+            }
+            .unlock-stripe-modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .unlock-stripe-modal-close {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+            }
+            #unlock-card-element {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                margin-bottom: 20px;
+            }
+            .unlock-stripe-submit {
+                background: #5469d4;
+                color: white;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                width: 100%;
+            }
+            #unlock-card-errors {
+                color: #dc3545;
+                margin-bottom: 10px;
+            }
+        `;
+
+        document.head.appendChild(style);
+        document.body.appendChild(modalContainer);
+
+        // Set up Stripe Elements
+        const cardElement = elements.create('card');
+        cardElement.mount('#unlock-card-element');
+
+        // Handle form submission
+        const form = document.getElementById('unlock-payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const { paymentMethod, error } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+            });
+
+            if (error) {
+                const errorElement = document.getElementById('unlock-card-errors');
+                errorElement.textContent = error.message;
+                reject(error);
+            } else {
+                modalContainer.remove();
+                resolve(paymentMethod.id);
+            }
+        });
+
+        // Handle modal close
+        const closeBtn = modalContainer.querySelector('.unlock-stripe-modal-close');
+        closeBtn.addEventListener('click', () => {
+            modalContainer.remove();
+            reject(new Error('Modal closed'));
+        });
+    });
+}
+
+// Update doPurchase function to handle payment method creation
+async function doPurchase(pkgId, messageContainerElement) {
     // if messageContainerElement is not provided, try to find a general one or default to alert
     let msgDisplay = messageContainerElement;
     if (!msgDisplay) {
@@ -385,39 +514,23 @@ function doPurchase(pkgId, messageContainerElement) {
         return;
     }
 
-    let paymentMethodId = null;
+    let paymentMethodId = defaultPaymentMethodId;
 
     if (!paymentMethodId) {
-        // TODO: Implement Stripe Elements to show a modal for payment method selection
-        // 1. Initialize Stripe.js and Elements
-        // 2. Create and mount the Card Element (or other payment elements)
-        // 3. On form submission in the modal:
-        //    a. Create a PaymentMethod using stripe.createPaymentMethod()
-        //    b. If successful, get the paymentMethod.id
-        //    c. Set paymentMethodId = paymentMethod.id
-        //    d. Proceed with the purchase using this new ID
-        //    e. Handle errors from Stripe
-        // For now, we'll alert the user and not proceed if no default and no new one is provided.
-        showMessage("Please set a default payment method in your profile or add a new one to complete the purchase.", true);
-        // Or, if you want to prevent purchase entirely without a PM:
-        // showMessage("No payment method available. Please add one in your profile.", true);
-        return; // Stop if no payment method is available and modal isn't implemented yet
+        try {
+            // Show Stripe modal and get new payment method ID
+            paymentMethodId = await showStripePaymentModal();
+        } catch (error) {
+            console.error('Payment method creation failed:', error);
+            showMessage("Payment method creation failed. Please try again.", true);
+            return;
+        }
     }
 
     const purchasePayload = { 
-        package_id: parseInt(pkgId)
+        package_id: parseInt(pkgId),
+        payment_method_id: paymentMethodId
     };
-
-    // Only add payment_method_id to payload if it's available
-    if (paymentMethodId) {
-        purchasePayload.payment_method_id = paymentMethodId;
-    } else {
-        // This case should ideally be handled by the modal logic above.
-        // If we reach here, it means the modal flow wasn't triggered or completed, 
-        // and there's no default. The API will likely reject this.
-        showMessage("Payment method ID is required. Please select a payment method.", true);
-        return;
-    }
 
     fetch(`${API_BASE}/purchase-package`, {
         method: "POST",
@@ -430,29 +543,21 @@ function doPurchase(pkgId, messageContainerElement) {
     })
     .then(res => {
         if (!res.ok) {
-            // Attempt to parse error as JSON, but fallback if not possible
             return res.text().then(text => {
                 try {
                     const errorData = JSON.parse(text);
                     const errorMessage = errorData?.message || errorData?.error || `Error: ${res.status} ${res.statusText}`;
                     throw new Error(errorMessage);
                 } catch (e) {
-                    // If response is not JSON, use status text or generic message
                     throw new Error(`Request failed: ${res.status} ${res.statusText}. ${text || ''}`.trim());
                 }
             });
         }
-        return res.json(); // Only call .json() once if res.ok
+        return res.json();
     })
-    // This block is now handled by the improved .then(res => ...) above
-    // .then(response => { ... }) // Keep this comment to indicate removal
     .then(data => {
-        // Assuming the API returns a success message or specific data upon successful purchase
         const successMessage = data?.message || "Package purchased successfully!";
         showMessage(successMessage, false);
-        // Optionally, reload user profile or packages if purchase affects them
-        // loadUserProfile(); 
-        // loadPackagesList(); 
     })
     .catch(err => {
         console.error(err);
