@@ -78,7 +78,7 @@ function doLogin(e) {
     });
 }
 
-/** ─── SIGNUP ─────────────────────────────────────────── **/
+/** ─── SIGNUP ─────────────────────────────────────── **/
 function doSignup(e) {
     e.preventDefault(); // blocca il submit predefinito
     const name     = document.querySelector("#unlock-signup-name")?.value;
@@ -447,9 +447,15 @@ async function loadUserProfile() {
         return;
     }
 
-    const settings = JSON.parse(wrapper.dataset.settings || '{}');
-    const nonce = wrapper.dataset.nonce;
-    const apiBaseUrl = API_BASE;
+    const settingsElement = wrapper.querySelector(".unlock-profile-settings");
+    if (!settingsElement) {
+        console.error('Settings element .unlock-profile-settings not found within wrapper. Exiting loadUserProfile.');
+        return;
+    }
+
+    const settings = JSON.parse(settingsElement.dataset.settings || '{}');
+    const nonce = wrapper.dataset.nonce; // Assuming nonce is still on the main wrapper
+    const apiBaseUrl = unlock_widgets_data.api_base_url;
     const redirectUrl = wrapper.dataset.redirectUrl || "";
     const contentDiv  = document.querySelector("#unlock-profile-content");
     const token       = getToken();
@@ -499,7 +505,6 @@ async function loadUserProfile() {
         }
 
         const data = await response.json();
-        console.log('Profile data:', data);
 
         let html = "";
 
