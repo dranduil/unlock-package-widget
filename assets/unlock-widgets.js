@@ -163,7 +163,7 @@ function loadPackagesList() {
     if (!container) return;
 
     const token = getToken();
-    container.innerHTML = "<p>Caricamento pacchetti…</p>";
+    container.innerHTML = "<p>Loading packages…</p>";
 
     fetch(`${API_BASE}/stripe/packages`, {
         headers: token
