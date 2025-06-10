@@ -3,6 +3,7 @@ const API_BASE = "https://api.unlockthemove.com/api";
 function setToken(token) {
     document.cookie = `unlock_token=${token}; path=/`;
 }
+
 function getToken() {
     const cookies = document.cookie.split(';');
     for (let cookie of cookies) {
@@ -452,6 +453,8 @@ async function loadUserProfile() {
     const redirectUrl = wrapper.dataset.redirectUrl || "";
     const contentDiv  = document.querySelector("#unlock-profile-content");
     const token       = getToken();
+    
+    console.log(token);
 
     // Authentication check: if not logged in and redirect URL is provided, redirect.
     if (!token) {
