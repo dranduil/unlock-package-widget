@@ -342,7 +342,7 @@ function loadSinglePackage(pkgId) {
 
 /** ─── Purchase Package ─────────────────────────────────── **/
 function doPurchase(pkgId, messageContainerElement) {
-    // if messageContainerElement is not provided, try to find a generic one or default to alert
+    // if messageContainerElement is not provided, try to find a general one or default to alert
     let msgDisplay = messageContainerElement;
     if (!msgDisplay) {
         // Attempt to find a general message display area if one exists for the list view
@@ -501,9 +501,8 @@ async function loadUserProfile() {
         const data = await response.json();
         console.log('Profile data:', data);
 
-        // The 'settings' variable parsed before the API call is already in scope and will be used here.
+        let html = "";
 
-        // Helper function to generate a field item
         const createField = (label, value, labelKey, valueKey, sectionKey, showFlag) => {
             if (settings[showFlag] === 'yes') {
                 const customLabel = settings[labelKey] || label;
@@ -644,13 +643,13 @@ async function loadUserProfile() {
         if (contentDiv) {
             contentDiv.innerHTML = html;
         }
-    })
-    .catch(err => {
+    }
+    catch(err) {
         console.error('Error loading user profile:', err); // DEBUG: Log any error during fetch or processing
         if (contentDiv) {
             contentDiv.innerHTML = "<p>Error loading profile.</p>";
         }
-    });
+    };
 }
 
 /** ─── SETUP EVENT LISTENERS ─────────────────────────────────────────────────┐ **/
