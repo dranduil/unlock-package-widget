@@ -449,7 +449,7 @@ async function loadUserProfile() {
 
     const settings = JSON.parse(wrapper.dataset.settings || '{}');
     const nonce = wrapper.dataset.nonce;
-    const apiBaseUrl = unlock_widgets_data.api_base_url;
+    const apiBaseUrl = API_BASE;
     const redirectUrl = wrapper.dataset.redirectUrl || "";
     const contentDiv  = document.querySelector("#unlock-profile-content");
     const token       = getToken();
@@ -474,8 +474,8 @@ async function loadUserProfile() {
     }
 
     try {
-        console.log('Fetching user profile data from:', `${apiBaseUrl}unlock/v1/profile`);
-        const response = await fetch(`${apiBaseUrl}unlock/v1/profile`, {
+        console.log('Fetching user profile data from:', `${API_BASE}/user`);
+        const response = await fetch(`${API_BASE}/user`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
