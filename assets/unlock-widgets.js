@@ -78,7 +78,7 @@ function doLogin(e) {
     });
 }
 
-/** ─── SIGNUP ─────────────────────────────────────── **/
+/** ─── SIGNUP ─────────────────────────────────── **/
 function doSignup(e) {
     e.preventDefault(); // blocca il submit predefinito
     const name     = document.querySelector("#unlock-signup-name")?.value;
@@ -386,8 +386,8 @@ function doPurchase(pkgId, messageContainerElement) {
     }
 
     // TODO: Implement UI for payment method selection here
-    // For now, we'll pass null, the backend should handle default or error if required.
-    const paymentMethodId = null; 
+    // For now, we'll use the globally stored default or null.
+    const paymentMethodId = defaultPaymentMethodId; 
 
     const purchasePayload = { 
         package_id: parseInt(pkgId)
@@ -441,6 +441,7 @@ function doPurchase(pkgId, messageContainerElement) {
 /** ─── PROFILE ─────────────────────────────────────────── **/
 async function loadUserProfile() {
     console.log('loadUserProfile called'); 
+    defaultPaymentMethodId = null; // Reset before loading
     const wrapper = document.querySelector(".unlock-profile-widget"); 
     if (!wrapper) {
         console.error('Profile wrapper .unlock-profile-widget not found. Exiting loadUserProfile.');
