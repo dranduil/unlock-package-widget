@@ -78,7 +78,7 @@ function doLogin(e) {
     });
 }
 
-/** ─── SIGNUP ─────────────────────────────────── **/
+/** ─── SIGNUP ─────────────────────────────── **/
 function doSignup(e) {
     e.preventDefault(); // blocca il submit predefinito
     const name     = document.querySelector("#unlock-signup-name")?.value;
@@ -385,16 +385,38 @@ function doPurchase(pkgId, messageContainerElement) {
         return;
     }
 
-    // TODO: Implement UI for payment method selection here
-    // For now, we'll use the globally stored default or null.
-    const paymentMethodId = defaultPaymentMethodId; 
+    let paymentMethodId = defaultPaymentMethodId;
+
+    if (!paymentMethodId) {
+        // TODO: Implement Stripe Elements to show a modal for payment method selection
+        // 1. Initialize Stripe.js and Elements
+        // 2. Create and mount the Card Element (or other payment elements)
+        // 3. On form submission in the modal:
+        //    a. Create a PaymentMethod using stripe.createPaymentMethod()
+        //    b. If successful, get the paymentMethod.id
+        //    c. Set paymentMethodId = paymentMethod.id
+        //    d. Proceed with the purchase using this new ID
+        //    e. Handle errors from Stripe
+        // For now, we'll alert the user and not proceed if no default and no new one is provided.
+        showMessage("Please set a default payment method in your profile or add a new one to complete the purchase.", true);
+        // Or, if you want to prevent purchase entirely without a PM:
+        // showMessage("No payment method available. Please add one in your profile.", true);
+        return; // Stop if no payment method is available and modal isn't implemented yet
+    }
 
     const purchasePayload = { 
         package_id: parseInt(pkgId)
     };
 
+    // Only add payment_method_id to payload if it's available
     if (paymentMethodId) {
         purchasePayload.payment_method_id = paymentMethodId;
+    } else {
+        // This case should ideally be handled by the modal logic above.
+        // If we reach here, it means the modal flow wasn't triggered or completed, 
+        // and there's no default. The API will likely reject this.
+        showMessage("Payment method ID is required. Please select a payment method.", true);
+        return;
     }
 
     fetch(`${API_BASE}/purchase-package`, {
