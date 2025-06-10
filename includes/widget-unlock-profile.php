@@ -188,7 +188,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
                 'label'       => __( 'Link Label', 'unlock-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'Website', 'unlock-elementor-widgets' ),
-                'placeholder' => __( 'E.g., Website', 'unlock-elementor-widgets' )
+                'placeholder' => __( 'E.g., Website', 'unlock-elementor-widgets' ),
                 'condition'   => [ 'show_link' => 'yes' ],
             ]
         );
