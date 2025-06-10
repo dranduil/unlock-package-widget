@@ -706,7 +706,7 @@ class Unlock_Widget_Profile extends \Elementor\Widget_Base {
 
         $js_settings = [];
         $is_user_logged_in = !empty($_COOKIE['unlock_token']);
-        if ( ! $is_user_logged_in() ) {
+        if ( ! $is_user_logged_in ) {
             if ( ! empty( $redirect_url ) ) {
                 // User is not logged in, and a redirect URL is set
                 echo '<div class="unlock-profile-widget-login-message">';
