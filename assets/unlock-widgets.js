@@ -387,7 +387,7 @@ async function showStripePaymentModal() {
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.5);
+                background: rgba(0, 0, 0, 0.75);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -395,41 +395,72 @@ async function showStripePaymentModal() {
             }
             .unlock-stripe-modal-content {
                 background: white;
-                padding: 20px;
-                border-radius: 8px;
+                padding: 30px;
+                border-radius: 12px;
                 width: 90%;
                 max-width: 500px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
             .unlock-stripe-modal-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 20px;
+                margin-bottom: 25px;
+            }
+            .unlock-stripe-modal-header h3 {
+                color: black;
+                margin: 0;
+                font-size: 24px;
+                font-weight: 600;
             }
             .unlock-stripe-modal-close {
                 background: none;
                 border: none;
-                font-size: 24px;
+                font-size: 28px;
                 cursor: pointer;
+                color: black;
+                padding: 5px;
+                line-height: 1;
+                transition: opacity 0.2s;
+            }
+            .unlock-stripe-modal-close:hover {
+                opacity: 0.7;
             }
             #unlock-card-element {
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                margin-bottom: 20px;
+                padding: 15px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                margin-bottom: 25px;
+                background: white;
+                transition: border-color 0.2s;
+            }
+            #unlock-card-element:focus-within {
+                border-color: #ffd700;
             }
             .unlock-stripe-submit {
-                background: #5469d4;
-                color: white;
-                padding: 12px 24px;
+                background: #ffd700;
+                color: black;
+                padding: 15px 30px;
                 border: none;
-                border-radius: 4px;
+                border-radius: 8px;
                 cursor: pointer;
                 width: 100%;
+                font-size: 16px;
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+            .unlock-stripe-submit:hover {
+                background: #ffed4a;
+                transform: translateY(-1px);
+            }
+            .unlock-stripe-submit:active {
+                transform: translateY(1px);
             }
             #unlock-card-errors {
                 color: #dc3545;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
+                font-size: 14px;
+                min-height: 20px;
             }
         `;
 
