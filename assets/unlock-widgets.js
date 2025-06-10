@@ -455,7 +455,6 @@ async function loadUserProfile() {
 
     const settings = JSON.parse(settingsElement.dataset.settings || '{}');
     const nonce = wrapper.dataset.nonce; // Assuming nonce is still on the main wrapper
-    const apiBaseUrl = unlock_widgets_data.api_base_url;
     const redirectUrl = wrapper.dataset.redirectUrl || "";
     const contentDiv  = document.querySelector("#unlock-profile-content");
     const token       = getToken();
