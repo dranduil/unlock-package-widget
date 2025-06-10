@@ -385,7 +385,7 @@ function doPurchase(pkgId, messageContainerElement) {
         return;
     }
 
-    let paymentMethodId = defaultPaymentMethodId;
+    let paymentMethodId = null;
 
     if (!paymentMethodId) {
         // TODO: Implement Stripe Elements to show a modal for payment method selection
